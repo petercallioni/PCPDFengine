@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PCPDFengine\PCPDFengine.csproj" />
+    <ProjectReference Include="..\PCPDFengine\PCPDFengineWPF.csproj" />
   </ItemGroup>
 
   <ItemGroup>
