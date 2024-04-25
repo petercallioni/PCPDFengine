@@ -5,11 +5,11 @@ VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineWPF", "PCPDFengine\PCPDFengineWPF.csproj", "{BDAAAF6E-D1C0-4292-9AD7-A254950D5748}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineTests", "PCPDFengineTests\PCPDFengineTests.csproj", "{29E99D4B-7DE7-4A25-9CA3-5F80DC8C2FD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineCLI", "CLI\PCPDFengineCLI.csproj", "{0543097B-E0E2-4F7A-93BF-AE55655287BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCPDFengineCLI", "CLI\PCPDFengineCLI.csproj", "{0543097B-E0E2-4F7A-93BF-AE55655287BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineCore", "PCPDFengineCore\PCPDFengineCore.csproj", "{1CEEBAA7-0615-4F3A-83FD-DD5773059238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCPDFengineCore", "PCPDFengineCore\PCPDFengineCore.csproj", "{1CEEBAA7-0615-4F3A-83FD-DD5773059238}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCPDFengineCoreTests", "PCPDFengineCoreTests\PCPDFengineCoreTests.csproj", "{33CDEDAC-4948-4F9F-899A-F2B8BA1F9DAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{BDAAAF6E-D1C0-4292-9AD7-A254950D5748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDAAAF6E-D1C0-4292-9AD7-A254950D5748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDAAAF6E-D1C0-4292-9AD7-A254950D5748}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29E99D4B-7DE7-4A25-9CA3-5F80DC8C2FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29E99D4B-7DE7-4A25-9CA3-5F80DC8C2FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29E99D4B-7DE7-4A25-9CA3-5F80DC8C2FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29E99D4B-7DE7-4A25-9CA3-5F80DC8C2FD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0543097B-E0E2-4F7A-93BF-AE55655287BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0543097B-E0E2-4F7A-93BF-AE55655287BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0543097B-E0E2-4F7A-93BF-AE55655287BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{1CEEBAA7-0615-4F3A-83FD-DD5773059238}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CEEBAA7-0615-4F3A-83FD-DD5773059238}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CEEBAA7-0615-4F3A-83FD-DD5773059238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33CDEDAC-4948-4F9F-899A-F2B8BA1F9DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33CDEDAC-4948-4F9F-899A-F2B8BA1F9DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33CDEDAC-4948-4F9F-899A-F2B8BA1F9DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33CDEDAC-4948-4F9F-899A-F2B8BA1F9DAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

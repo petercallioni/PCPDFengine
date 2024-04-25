@@ -1,0 +1,8 @@
+﻿LINE HEADER 1  HEADER 2  HEADER 3            HEADER 4  HEADER 5  
+HEAD test 1    0000000001TRUE                     RIGHT          
+HEAD test 2    0000000111yes                      RIGHT          
+HEAD test 3    00000111111                        RIGHT          
+HEAD test 4    0000000011false                    RIGHT          
+HEAD test 6    00000011110                        RIGHT          
+CHILDTEST TEXT 00000011110                        RIGHT          
+HEAD test 7    0000111111no                       RIGHT          
