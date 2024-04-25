@@ -3,12 +3,12 @@
     public class TextReaderOptions
     {
         private int _headerLines;
-        private List<Field> _sectionIdentifiers;
+        private List<Field?> _sectionIdentifiers;
 
-        public TextReaderOptions(int headerLines = 0, Field recordHeader = null)
+        public TextReaderOptions(int headerLines = 0, Field? recordHeader = null)
         {
             _headerLines = headerLines;
-            _sectionIdentifiers = new List<Field>();
+            _sectionIdentifiers = new List<Field?>();
             SectionIdentifiers.Add(recordHeader);
         }
 
@@ -25,6 +25,6 @@
             }
         }
 
-        public List<Field> SectionIdentifiers { get => _sectionIdentifiers; }
+        public List<Field?> SectionIdentifiers { get => _sectionIdentifiers; }
     }
 }

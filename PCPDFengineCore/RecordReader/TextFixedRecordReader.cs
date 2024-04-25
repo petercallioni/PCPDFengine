@@ -77,12 +77,12 @@ namespace PCPDFengineCore.RecordReader
                             // On the header section
                             if (i == 0)
                             {
-                                headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i].Name
-                                && (x.Value.Equals(_options.SectionIdentifiers[i].Value))).FirstOrDefault();
+                                headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i]!.Name
+                                && (x.Value!.Equals(_options.SectionIdentifiers[i]!.Value))).FirstOrDefault();
 
                                 if (headerField != null)
                                 {
-                                    string sectionValue = headerField.Value.ToString();
+                                    string sectionValue = headerField.Value!.ToString()!;
                                     if (record != null)
                                     {
                                         records.Add(record);
@@ -95,23 +95,26 @@ namespace PCPDFengineCore.RecordReader
                             }
                             else
                             {
-                                headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i].Name
-                                                                && (x.Value.Equals(_options.SectionIdentifiers[i].Value) || _options.SectionIdentifiers[i].Value == null)).FirstOrDefault();
+                                headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i]!.Name
+                                                                && (x.Value!.Equals(_options.SectionIdentifiers[i]!.Value) || _options.SectionIdentifiers[i]!.Value == null)).FirstOrDefault();
                                 if (headerField != null)
                                 {
-                                    section = record.AddSection(headerField.Value.ToString());
+                                    section = record!.AddSection(headerField.Value!.ToString()!);
                                     break;
                                 }
                             }
                         }
                     }
 
-                    section.Fields.AddRange(extractedFields);
+                    if (section != null)
+                    {
+                        section.Fields.AddRange(extractedFields);
+                    }
                 }
 
             }
 
-            if (record.HasContent())
+            if (record != null && record.HasContent())
             {
                 records.Add(record);
             }

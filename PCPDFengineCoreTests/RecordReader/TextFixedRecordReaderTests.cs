@@ -3,7 +3,6 @@ using PCPDFengineCore.Models.RecordReaderOptions;
 using PCPDFengineCore.RecordReader;
 using PCPDFengineCoreTests.Extensions;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace PCPDFengineCoreTests.RecordReader
 {
@@ -24,9 +23,9 @@ namespace PCPDFengineCoreTests.RecordReader
             options.Fields.Add(new TextDataField("Header 5", 10, TextFixedRecordReaderOptions.FixedWidthAligment.RIGHT, PCPDFengineCore.Models.Enums.FieldType.STRING));
 
             TextFixedRecordReader reader = new TextFixedRecordReader(options);
-            FileStream? dataFile = Assembly.GetExecutingAssembly().GetFile("PCPDFengineCoreTests.FixedWidth.txt");
             List<Record> results = reader.LoadRecordsFromFile("./TestResources/TestDataFiles/FixedWidth.txt");
 
+            // First section is always the header.
             Assert.AreEqual(results[0].Sections.First().GetField("Header 1").ConvertToActualType<string>(), "test 1");
             Assert.AreEqual(results[0].Sections.First().GetField("Header 2").ConvertToActualType<int>(), 1);
             Assert.AreEqual(results[0].Sections.First().GetField("Header 3").ConvertToActualType<bool>(), true);

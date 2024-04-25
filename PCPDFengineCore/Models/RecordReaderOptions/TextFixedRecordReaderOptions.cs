@@ -5,7 +5,7 @@
         private List<TextDataField> _fields;
         private bool _trim = false;
 
-        public TextFixedRecordReaderOptions(int headerLines, bool trim = true, Field recordHeader = null) : base(headerLines, recordHeader)
+        public TextFixedRecordReaderOptions(int headerLines, bool trim = true, Field? recordHeader = null) : base(headerLines, recordHeader)
         {
             _fields = new List<TextDataField>();
 

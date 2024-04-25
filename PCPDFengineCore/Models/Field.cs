@@ -7,10 +7,9 @@ namespace PCPDFengineCore.Models
     {
         private string _name;
         private FieldType _type;
-        private object _value;
-        private bool _isHeader;
+        private object? _value;
         public FieldType Type { get => _type; }
-        public object Value { get => _value; }
+        public object? Value { get => _value; }
         public string Name { get => _name; }
 
         public Field(FieldType type, string name, string? value)
@@ -18,46 +17,53 @@ namespace PCPDFengineCore.Models
             _type = type;
             _name = name;
 
-            switch (_type)
+            if (value != null)
             {
-                case FieldType.STRING:
-                    _value = value;
-                    break;
-                case FieldType.INT:
-                    {
-                        int convertedValue;
-                        bool success = int.TryParse(value, out convertedValue);
-                        _value = success ? convertedValue : "NaN";
-                    }
-                    break;
-                case FieldType.BIG_INT:
-                    {
-                        long convertedValue;
-                        bool success = long.TryParse(value, out convertedValue);
-                        _value = success ? convertedValue : "NaN";
-                    }
-                    break;
-                case FieldType.DOUBLE:
-                    {
-                        double convertedValue;
-                        bool success = double.TryParse(value, out convertedValue);
-                        _value = success ? convertedValue : "NaN";
-                    }
-                    break;
-                case FieldType.BOOLEAN:
-                    {
-                        string pattern = @"^(true|yes|y|[1-9]+)$";
-                        RegexOptions options = RegexOptions.IgnoreCase;
+                switch (_type)
+                {
+                    case FieldType.STRING:
+                        _value = value;
+                        break;
+                    case FieldType.INT:
+                        {
+                            int convertedValue;
+                            bool success = int.TryParse(value, out convertedValue);
+                            _value = success ? convertedValue : "NaN";
+                        }
+                        break;
+                    case FieldType.BIG_INT:
+                        {
+                            long convertedValue;
+                            bool success = long.TryParse(value, out convertedValue);
+                            _value = success ? convertedValue : "NaN";
+                        }
+                        break;
+                    case FieldType.DOUBLE:
+                        {
+                            double convertedValue;
+                            bool success = double.TryParse(value, out convertedValue);
+                            _value = success ? convertedValue : "NaN";
+                        }
+                        break;
+                    case FieldType.BOOLEAN:
+                        {
+                            string pattern = @"^(true|yes|y|[1-9]+)$";
+                            RegexOptions options = RegexOptions.IgnoreCase;
 
-                        _value = Regex.IsMatch(value, pattern, options);
-                    }
-                    break;
-                case FieldType.INSERT_IMAGE:
-                case FieldType.INSERT_PDF:
-                    _value = new FileInfo(value);
-                    break;
-                default:
-                    throw new NotImplementedException($"The data type ${_type} is not implemented yet");
+                            _value = Regex.IsMatch(value, pattern, options);
+                        }
+                        break;
+                    case FieldType.INSERT_IMAGE:
+                    case FieldType.INSERT_PDF:
+                        _value = new FileInfo(value);
+                        break;
+                    default:
+                        throw new NotImplementedException($"The data type ${_type} is not implemented yet");
+                }
+            }
+            else
+            {
+                _value = value;
             }
         }
     }
@@ -82,8 +88,7 @@ namespace PCPDFengineCore.Models
                     throw new InvalidCastException($"Casting FieldType {field.Type.ToString()} to {typeof(T).ToString()} is invalid.");
                 }
 
-                T convertedValue = (T)field.Value;
-                return convertedValue;
+                return field.Value != null ? (T)field.Value : throw new NullReferenceException("Tried to convert a value that is null.");
             }
             else
             {
