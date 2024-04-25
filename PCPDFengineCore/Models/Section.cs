@@ -20,7 +20,7 @@
 
             if (field == null)
             {
-                throw new NullReferenceException($"Field named ${fieldName} does not exist.");
+                throw new NullReferenceException($"Field named {fieldName} does not exist.");
             }
             else
             {

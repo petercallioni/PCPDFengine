@@ -47,7 +47,7 @@ namespace PCPDFengineCore.RecordReader
                             records.Add(record);
                         }
                         record = new Record();
-                        section = record.GetSection();
+                        section = record.Sections.First();
                     }
                     else
                     {
@@ -65,38 +65,48 @@ namespace PCPDFengineCore.RecordReader
                         }
 
                         cursor += field.Size;
-                        Field extractedField = new Field(field.FieldType, columnValue, field.Name);
+                        Field extractedField = new Field(field.FieldType, field.Name, columnValue);
+                        extractedFields.Add(extractedField);
+                    }
 
-                        if (hasSections)
+                    if (hasSections)
+                    {
+                        for (int i = 0; i < _options.SectionIdentifiers.Count; i++)
                         {
-                            for (int i = _options.SectionIdentifiers.Count - 1; i >= 0; i--)
+                            Field? headerField = null;
+                            // On the header section
+                            if (i == 0)
                             {
-                                if (field.Name.Equals(extractedField.Name)
-                                    && _options.SectionIdentifiers[i].Value.Equals(extractedField.Value))
+                                headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i].Name
+                                && (x.Value.Equals(_options.SectionIdentifiers[i].Value))).FirstOrDefault();
+
+                                if (headerField != null)
                                 {
-                                    if (i == 0) // Is a the header section
+                                    string sectionValue = headerField.Value.ToString();
+                                    if (record != null)
                                     {
-                                        string sectionValue = extractedField.Value.ToString();
-                                        if (record != null)
-                                        {
-                                            records.Add(record);
-                                        }
-
-                                        record = new Record(sectionValue);
-                                        section = record.GetSection(sectionValue);
-                                    }
-                                    else
-                                    {
-                                        section = record.AddSection(_options.SectionIdentifiers[i].Value.ToString());
+                                        records.Add(record);
                                     }
 
+                                    record = new Record(sectionValue);
+                                    section = record.Sections.First();
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i].Name
+                                                                && (x.Value.Equals(_options.SectionIdentifiers[i].Value) || _options.SectionIdentifiers[i].Value == null)).FirstOrDefault();
+                                if (headerField != null)
+                                {
+                                    section = record.AddSection(headerField.Value.ToString());
                                     break;
                                 }
                             }
                         }
-
-                        record.GetSection(section).Fields.Add(extractedField);
                     }
+
+                    section.Fields.AddRange(extractedFields);
                 }
 
             }

@@ -5,4 +5,5 @@ HEAD test 3    00000111111                        RIGHT
 HEAD test 4    0000000011false                    RIGHT          
 HEAD test 6    00000011110                        RIGHT          
 CHILDTEST TEXT 00000011110                        RIGHT          
+CHILDTEST TEXT 00000011110                        RIGHT          
 HEAD test 7    0000111111no                       RIGHT          

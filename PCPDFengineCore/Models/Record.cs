@@ -35,11 +35,6 @@
         {
             Section section = new Section(sectionName);
 
-            if (GetSection(sectionName) != null)
-            {
-                throw new ArgumentException($"Section named ${sectionName} already exists.");
-            }
-
             _sections.Add(section);
 
             return section;
@@ -48,21 +43,5 @@
         public long Id { get => _id; set => _id = value; }
 
         public List<Section> Sections { get => _sections; set => _sections = value; }
-        /// <summary>
-        /// Gets the default section.
-        /// </summary>
-        public Section GetSection()
-        {
-            return GetSection(DEFAULT_SECTION_NANE);
-        }
-        public Section GetSection(Section section)
-        {
-            return GetSection(section.Name);
-        }
-        public Section GetSection(string sectionName)
-        {
-            Section? section = _sections.Where(x => x.Name == sectionName).FirstOrDefault();
-            return section;
-        }
     }
 }
