@@ -1,5 +1,5 @@
 ﻿using PCPDFengineCore.Models.Enums;
-using static PCPDFengineCore.Models.RecordReaderOptions.TextFixedRecordReaderOptions;
+using PCPDFengineCore.Models.RecordReaderOptions;
 
 namespace PCPDFengineCore.Models
 {
