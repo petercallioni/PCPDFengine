@@ -3,13 +3,13 @@ using PCPDFengineCore.Models.RecordReaderOptions;
 
 namespace PCPDFengineCore.Models
 {
-    public class TextDataField
+    public class TextFixedWidthDataField
     {
         private readonly string _name;
         private readonly int _size;
         private readonly FixedWidthAligment _alignment;
         private readonly FieldType _fieldType;
-        public TextDataField(string name, int size, FixedWidthAligment aligment, FieldType fieldType)
+        public TextFixedWidthDataField(string name, int size, FixedWidthAligment aligment, FieldType fieldType)
         {
             _name = name;
             _size = size;

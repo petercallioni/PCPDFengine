@@ -5,26 +5,26 @@ using PCPDFengineCore.RecordReader;
 namespace PCPDFengineCoreTests.RecordReader
 {
     [TestClass()]
-    public class TextFixedRecordReaderTests
+    public class TextDelimitedRecordReaderTests
     {
-        private TextFixedRecordReaderOptions _options;
+        private TextDelimitedRecordReaderOptions _options;
         private List<Record> results = new List<Record>();
 
-        public TextFixedRecordReaderTests()
+        public TextDelimitedRecordReaderTests()
         {
-            _options = new TextFixedRecordReaderOptions(1, true, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
-            new TextFixedWidthDataField[]
+            _options = new TextDelimitedRecordReaderOptions(1, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
+            new TextDelimitedDataField[]
             {
-                new TextFixedWidthDataField("Header 0", 5, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.STRING),
-                new TextFixedWidthDataField("Header 1", 10, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.STRING),
-                new TextFixedWidthDataField("Header 2", 10, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.INT),
-                new TextFixedWidthDataField("Header 3", 20, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.BOOLEAN),
-                new TextFixedWidthDataField("Header 4", 10, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.STRING),
-                new TextFixedWidthDataField("Header 5", 10, FixedWidthAligment.RIGHT, PCPDFengineCore.Models.Enums.FieldType.STRING)
+                new TextDelimitedDataField("Header 0", PCPDFengineCore.Models.Enums.FieldType.STRING),
+                new TextDelimitedDataField("Header 1", PCPDFengineCore.Models.Enums.FieldType.STRING),
+                new TextDelimitedDataField("Header 2", PCPDFengineCore.Models.Enums.FieldType.INT),
+                new TextDelimitedDataField("Header 3", PCPDFengineCore.Models.Enums.FieldType.BOOLEAN),
+                new TextDelimitedDataField("Header 4", PCPDFengineCore.Models.Enums.FieldType.STRING),
+                new TextDelimitedDataField("Header 5", PCPDFengineCore.Models.Enums.FieldType.STRING)
             });
 
-            TextFixedRecordReader reader = new TextFixedRecordReader(_options);
-            results = reader.LoadRecordsFromFile(TestResources.DataFiles.FIXED_WIDTH);
+            TextDelimitedRecordReader reader = new TextDelimitedRecordReader(_options);
+            results = reader.LoadRecordsFromFile(TestResources.DataFiles.DELIMITED_CSV);
         }
 
         [TestMethod()]

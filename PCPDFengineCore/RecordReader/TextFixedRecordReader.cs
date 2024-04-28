@@ -56,7 +56,9 @@ namespace PCPDFengineCore.RecordReader
 
                     List<Field> extractedFields = new List<Field>();
 
-                    foreach (TextDataField field in _options.Fields)
+
+                    // Fixed width specific -----------------------------
+                    foreach (TextFixedWidthDataField field in _options.Fields)
                     {
                         string columnValue = line.Substring(cursor, field.Size);
                         if (_options.Trim)
@@ -68,6 +70,7 @@ namespace PCPDFengineCore.RecordReader
                         Field extractedField = new Field(field.FieldType, field.Name, columnValue);
                         extractedFields.Add(extractedField);
                     }
+                    // -----------------------------
 
                     if (hasSections)
                     {

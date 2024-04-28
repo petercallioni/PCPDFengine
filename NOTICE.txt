@@ -1,0 +1,3 @@
+This software uses the following packages that are under the Apache 2.0 license, which can be found here: https://licenses.nuget.org/Apache-2.0:
+CsvHelper
+PdfPig

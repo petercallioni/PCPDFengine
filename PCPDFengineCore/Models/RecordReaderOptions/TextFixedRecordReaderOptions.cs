@@ -2,12 +2,12 @@
 {
     public partial class TextFixedRecordReaderOptions : TextReaderOptions
     {
-        private List<TextDataField> _fields;
+        private List<TextFixedWidthDataField> _fields;
         private bool _trim = false;
 
-        public TextFixedRecordReaderOptions(int headerLines, bool trim = true, Field? recordHeader = null, IEnumerable<TextDataField>? fields = null) : base(headerLines, recordHeader)
+        public TextFixedRecordReaderOptions(int headerLines, bool trim = true, Field? recordHeader = null, IEnumerable<TextFixedWidthDataField>? fields = null) : base(headerLines, recordHeader)
         {
-            _fields = new List<TextDataField>();
+            _fields = new List<TextFixedWidthDataField>();
             _trim = trim;
 
             if (fields != null)
@@ -17,7 +17,7 @@
         }
 
         public bool Trim { get => _trim; set => _trim = value; }
-        public List<TextDataField> Fields
+        public List<TextFixedWidthDataField> Fields
         {
             get => _fields;
         }

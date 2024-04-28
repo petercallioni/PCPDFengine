@@ -7,7 +7,8 @@
         internal static class DataFiles
         {
             internal static string DIRECTORY = Path.Combine(RESOURCES_DIRECTORY, "TestDataFiles");
-            internal static string FIXED_WIDTH_DATA = Path.Combine(DIRECTORY, "FixedWidth.txt");
+            internal static string FIXED_WIDTH = Path.Combine(DIRECTORY, "FixedWidth.txt");
+            internal static string DELIMITED_CSV = Path.Combine(DIRECTORY, "Delimited.csv");
         }
 
         internal static class InsertFiles
