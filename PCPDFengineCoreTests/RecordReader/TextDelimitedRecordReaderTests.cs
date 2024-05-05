@@ -2,7 +2,7 @@
 using PCPDFengineCore.Models.RecordReaderOptions;
 using PCPDFengineCore.RecordReader;
 
-namespace PCPDFengineCoreTests.RecordReader
+namespace PCPDFengineCoreTests.RecordReader.Tests
 {
     [TestClass()]
     public class TextDelimitedRecordReaderTests

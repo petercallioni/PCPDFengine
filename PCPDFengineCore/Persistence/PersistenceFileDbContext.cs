@@ -7,23 +7,25 @@ namespace PCPDFengineCore.Persistence
     public class PersistenceFileDbContext : DbContext
     {
         private string _databasePath;
-
+        private AccessMode _accessMode;
 
         public DbSet<FileInformation> FileInformation { get; set; }
 
-        public PersistenceFileDbContext(string databasePath)
+        public PersistenceFileDbContext(string databasePath, AccessMode accessMode)
         {
             _databasePath = databasePath;
+            _accessMode = accessMode;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            SqliteOpenMode sqliteOpenMode = _accessMode == AccessMode.READ ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate;
+
             string connectionString = new SqliteConnectionStringBuilder
             {
                 DataSource = _databasePath,
-                Mode = SqliteOpenMode.ReadWriteCreate,
-                Pooling = false,  // Disable connection pooling
-
+                Mode = sqliteOpenMode,
+                Pooling = true,  // Disable connection pooling
             }.ToString();
 
             optionsBuilder.UseSqlite(connectionString);
