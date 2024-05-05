@@ -44,6 +44,10 @@ namespace PCPDFengineCore.Persistence
             {
                 _dbContext.SaveChanges();
             }
+            else
+            {
+                throw new NullReferenceException("Attempted to save on null dbContext");
+            }
         }
 
         public void CloseDatabase()
@@ -54,6 +58,16 @@ namespace PCPDFengineCore.Persistence
                 _dbContext.Dispose();
                 _dbContext = null;
             }
+        }
+
+        public FileInformation? GetFileInformation()
+        {
+            if (_dbContext != null)
+            {
+                return _dbContext.FileInformation.FirstOrDefault();
+            }
+
+            return null;
         }
 
         private PersistenceFileDbContext? DbContext { get => _dbContext; }

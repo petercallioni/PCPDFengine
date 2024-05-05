@@ -7,6 +7,7 @@ namespace PCPDFengineCore.Interfaces
         void LoadDatabase(string dataBasePath, bool clearExisting = false);
         void SaveDatabase();
         void UpdateFileInformation(FileInformation fileInformation);
+        FileInformation? GetFileInformation();
         void CloseDatabase();
     }
 }

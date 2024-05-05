@@ -4,12 +4,6 @@ using PCPDFengineCore.Persistence.Records;
 
 namespace PCPDFengineCore.Persistence
 {
-    public enum AccessMode
-    {
-        READ,
-        WRITIE,
-    }
-
     public class PersistenceFileDbContext : DbContext
     {
         private string _databasePath;
@@ -29,6 +23,7 @@ namespace PCPDFengineCore.Persistence
                 DataSource = _databasePath,
                 Mode = SqliteOpenMode.ReadWriteCreate,
                 Pooling = false,  // Disable connection pooling
+
             }.ToString();
 
             optionsBuilder.UseSqlite(connectionString);

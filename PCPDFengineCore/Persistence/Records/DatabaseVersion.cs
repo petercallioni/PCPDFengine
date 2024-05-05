@@ -2,7 +2,6 @@
 {
     public static class DatabaseInformation
     {
-        public static int MajorVersion = 1;
-        public static int MinorVersion = 0;
+        public static string Version = "1.0";
     }
 }

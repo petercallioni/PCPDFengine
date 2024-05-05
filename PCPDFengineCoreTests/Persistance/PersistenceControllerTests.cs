@@ -1,42 +1,47 @@
-﻿using PCPDFengineCoreTests;
-using System.Security.Cryptography;
+﻿using PCPDFengineCore.Extensions;
+using PCPDFengineCore.Persistence.Records;
+using PCPDFengineCoreTests;
+using System.Diagnostics;
 
 namespace PCPDFengineCore.Persistence.Tests
 {
     [TestClass()]
     public class PersistenceControllerTests
     {
-        [TestMethod()]
-        public void LoadDataBaseTest()
+        PersistenceController controller;
+        public PersistenceControllerTests()
         {
-            PersistenceController controller = new PersistenceController();
-            controller.LoadDatabase(TestResources.TEST_DATABASE, true);
-
-            Assert.IsTrue(File.Exists(TestResources.TEST_DATABASE));
-        }
-
-        public void InsertDataTest()
-        {
-
+            controller = new PersistenceController();
         }
 
         [TestMethod()]
-        public void SaveDataBaseTest()
+        public void InsertAndReadDataTest()
         {
-            PersistenceController controller = new PersistenceController();
             controller.LoadDatabase(TestResources.TEST_DATABASE, true);
-            controller.CloseDatabase();
+            FileInformation fileInformation = new FileInformation();
+            fileInformation.DatabaseVersion = DatabaseInformation.Version;
+            fileInformation.TimeCreated = DateTime.Now;
+            fileInformation.TimeUpdated = DateTime.Now;
 
-            byte[] startHash = SHA1.HashData(File.ReadAllBytes(TestResources.TEST_DATABASE));
-
-            controller.LoadDatabase(TestResources.TEST_DATABASE, false);
-            FileInfo fileInfo = new FileInfo(TestResources.TEST_DATABASE);
+            controller.UpdateFileInformation(fileInformation);
             controller.SaveDatabase();
             controller.CloseDatabase();
 
-            byte[] endHash = SHA1.HashData(File.ReadAllBytes(TestResources.TEST_DATABASE));
+            controller.LoadDatabase(TestResources.TEST_DATABASE, false);
+            FileInformation? readInfo = controller.GetFileInformation();
+            controller.CloseDatabase();
 
-            Assert.AreNotEqual(startHash, endHash);
+            Trace.WriteLine(readInfo.DumpObject());
+            Assert.IsNotNull(readInfo);
+        }
+
+        [TestMethod()]
+        public void CanCreateDataBaseTest()
+        {
+            controller.LoadDatabase(TestResources.TEST_DATABASE, true);
+            controller.CloseDatabase();
+
+            Assert.IsTrue(new FileInfo(TestResources.TEST_DATABASE).Exists);
         }
     }
 }
