@@ -3,6 +3,7 @@
     internal static class TestResources
     {
         internal static string RESOURCES_DIRECTORY = Path.GetFullPath("./TestResources/");
+        internal static string TEST_DATABASE = Path.Combine(RESOURCES_DIRECTORY, "TEST.pcpdf");
 
         internal static class DataFiles
         {
