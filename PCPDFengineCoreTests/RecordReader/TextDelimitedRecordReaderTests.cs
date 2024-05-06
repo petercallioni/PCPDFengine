@@ -7,12 +7,12 @@ namespace PCPDFengineCoreTests.RecordReader.Tests
     [TestClass()]
     public class TextDelimitedRecordReaderTests
     {
-        private TextDelimitedRecordReaderOptions _options;
+        private TextDelimitedRecordReaderOptions options;
         private List<Record> results = new List<Record>();
 
         public TextDelimitedRecordReaderTests()
         {
-            _options = new TextDelimitedRecordReaderOptions(1, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
+            options = new TextDelimitedRecordReaderOptions(1, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
             new TextDelimitedDataField[]
             {
                 new TextDelimitedDataField("Header 0", PCPDFengineCore.Models.Enums.FieldType.STRING),
@@ -21,9 +21,9 @@ namespace PCPDFengineCoreTests.RecordReader.Tests
                 new TextDelimitedDataField("Header 3", PCPDFengineCore.Models.Enums.FieldType.BOOLEAN),
                 new TextDelimitedDataField("Header 4", PCPDFengineCore.Models.Enums.FieldType.STRING),
                 new TextDelimitedDataField("Header 5", PCPDFengineCore.Models.Enums.FieldType.STRING)
-            });
+            }.ToList());
 
-            TextDelimitedRecordReader reader = new TextDelimitedRecordReader(_options);
+            TextDelimitedRecordReader reader = new TextDelimitedRecordReader(options);
             results = reader.LoadRecordsFromFile(TestResources.DataFiles.DELIMITED_CSV);
         }
 

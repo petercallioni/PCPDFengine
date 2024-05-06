@@ -7,12 +7,12 @@ namespace PCPDFengineCoreTests.RecordReader.Tests
     [TestClass()]
     public class TextFixedRecordReaderTests
     {
-        private TextFixedRecordReaderOptions _options;
+        private TextFixedRecordReaderOptions options;
         private List<Record> results = new List<Record>();
 
         public TextFixedRecordReaderTests()
         {
-            _options = new TextFixedRecordReaderOptions(1, true, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
+            options = new TextFixedRecordReaderOptions(1, true, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
             new TextFixedWidthDataField[]
             {
                 new TextFixedWidthDataField("Header 0", 5, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.STRING),
@@ -21,9 +21,9 @@ namespace PCPDFengineCoreTests.RecordReader.Tests
                 new TextFixedWidthDataField("Header 3", 20, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.BOOLEAN),
                 new TextFixedWidthDataField("Header 4", 10, FixedWidthAligment.LEFT, PCPDFengineCore.Models.Enums.FieldType.STRING),
                 new TextFixedWidthDataField("Header 5", 10, FixedWidthAligment.RIGHT, PCPDFengineCore.Models.Enums.FieldType.STRING)
-            });
+            }.ToList());
 
-            TextFixedRecordReader reader = new TextFixedRecordReader(_options);
+            TextFixedRecordReader reader = new TextFixedRecordReader(options);
             results = reader.LoadRecordsFromFile(TestResources.DataFiles.FIXED_WIDTH);
         }
 

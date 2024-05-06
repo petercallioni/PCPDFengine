@@ -9,12 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineCoreTests", "PCP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB11D9B0-6EED-4A5E-B705-70AA7B9F94F2}"
 	ProjectSection(SolutionItems) = preProject
+		Ideas.txt = Ideas.txt
 		NOTICE.txt = NOTICE.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineGUI", "PCPDFengineGUI\PCPDFengineGUI.csproj", "{AD0DB33C-D500-4362-9A68-15FA58DE34E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCPDFengineCLI", "PCPDFengineCLI\PCPDFengineCLI.csproj", "{0AF25C33-35F3-4394-ABC6-2472EC1DBDCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCPDFengineCLI", "PCPDFengineCLI\PCPDFengineCLI.csproj", "{0AF25C33-35F3-4394-ABC6-2472EC1DBDCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

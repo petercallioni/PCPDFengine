@@ -5,22 +5,23 @@ namespace PCPDFengineCore.Models
 {
     public class TextFixedWidthDataField
     {
-        private readonly string _name;
-        private readonly int _size;
-        private readonly FixedWidthAligment _alignment;
-        private readonly FieldType _fieldType;
-        public TextFixedWidthDataField(string name, int size, FixedWidthAligment aligment, FieldType fieldType)
+        private readonly string name;
+        private readonly int size;
+        private readonly FixedWidthAligment alignment;
+        private readonly FieldType fieldType;
+
+        public TextFixedWidthDataField(string name, int size, FixedWidthAligment alignment, FieldType fieldType)
         {
-            _name = name;
-            _size = size;
-            _alignment = aligment;
-            _fieldType = fieldType;
+            this.name = name;
+            this.size = size;
+            this.alignment = alignment;
+            this.fieldType = fieldType;
         }
 
-        public FixedWidthAligment Alignment => _alignment;
-        public int Size => _size;
-        public string Name => _name;
+        public FixedWidthAligment Alignment => alignment;
+        public int Size => size;
+        public string Name => name;
 
-        public FieldType FieldType => _fieldType;
+        public FieldType FieldType => fieldType;
     }
 }

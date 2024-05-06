@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace PCPDFengineCore.Extensions
 {
@@ -6,7 +6,9 @@ namespace PCPDFengineCore.Extensions
     {
         public static string DumpObject(this object obj)
         {
-            string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+            string json = JsonSerializer.Serialize(obj, options);
             return json;
         }
     }

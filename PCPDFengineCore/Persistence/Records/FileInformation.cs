@@ -1,6 +1,6 @@
 ﻿namespace PCPDFengineCore.Persistence.Records
 {
-    public class FileInformation : BaseRecord
+    public class FileInformation
     {
         public string DatabaseVersion { get; set; }
         public DateTime TimeCreated { get; set; }

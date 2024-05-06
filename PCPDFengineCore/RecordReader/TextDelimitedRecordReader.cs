@@ -8,12 +8,17 @@ namespace PCPDFengineCore.RecordReader
 {
     public class TextDelimitedRecordReader : IRecordReader
     {
-        private TextDelimitedRecordReaderOptions _options;
+        private TextDelimitedRecordReaderOptions options;
+        private string classTypeString;
 
-        public TextDelimitedRecordReader(TextDelimitedRecordReaderOptions options)
+        public TextDelimitedRecordReader(TextDelimitedRecordReaderOptions options, string classTypeString = "")
         {
-            _options = options;
+            this.options = options;
+            this.classTypeString = this.GetType().ToString();
         }
+
+        public TextDelimitedRecordReaderOptions Options { get => options; set => options = value; }
+        public string ClassTypeString { get => classTypeString; }
 
         public List<Record> LoadRecordsFromFile(string filename)
         {
@@ -37,13 +42,13 @@ namespace PCPDFengineCore.RecordReader
                         fileLine++;
 
                         // Skip the header lines.
-                        if (fileLine <= _options.HeaderLines)
+                        if (fileLine <= Options.HeaderLines)
                         {
                             continue;
                         }
 
                         // There is no primary section identifier, assume each row is a new record.
-                        if (_options.SectionIdentifiers.First() == null)
+                        if (Options.SectionIdentifiers.First() == null)
                         {
                             if (record != null)
                             {
@@ -62,7 +67,7 @@ namespace PCPDFengineCore.RecordReader
                         // Delimited specific -----------------------------
                         string[] fields = csv.Parser.Record;
 
-                        foreach (TextDelimitedDataField field in _options.Fields)
+                        foreach (TextDelimitedDataField field in Options.Fields)
                         {
                             Field extractedField = new Field(field.FieldType, field.Name, fields[cursor]);
                             extractedFields.Add(extractedField);
@@ -72,14 +77,14 @@ namespace PCPDFengineCore.RecordReader
 
                         if (hasSections)
                         {
-                            for (int i = 0; i < _options.SectionIdentifiers.Count; i++)
+                            for (int i = 0; i < Options.SectionIdentifiers.Count; i++)
                             {
                                 Field? headerField = null;
                                 // On the header section
                                 if (i == 0)
                                 {
-                                    headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i]!.Name
-                                    && (x.Value!.Equals(_options.SectionIdentifiers[i]!.Value))).FirstOrDefault();
+                                    headerField = extractedFields.Where(x => x.Name == Options.SectionIdentifiers[i]!.Name
+                                    && (x.Value!.Equals(Options.SectionIdentifiers[i]!.Value))).FirstOrDefault();
 
                                     if (headerField != null)
                                     {
@@ -96,8 +101,8 @@ namespace PCPDFengineCore.RecordReader
                                 }
                                 else
                                 {
-                                    headerField = extractedFields.Where(x => x.Name == _options.SectionIdentifiers[i]!.Name
-                                                                    && (x.Value!.Equals(_options.SectionIdentifiers[i]!.Value) || _options.SectionIdentifiers[i]!.Value == null)).FirstOrDefault();
+                                    headerField = extractedFields.Where(x => x.Name == Options.SectionIdentifiers[i]!.Name
+                                                                    && (x.Value!.Equals(Options.SectionIdentifiers[i]!.Value) || Options.SectionIdentifiers[i]!.Value == null)).FirstOrDefault();
                                     if (headerField != null)
                                     {
                                         section = record!.AddSection(headerField.Value!.ToString()!);

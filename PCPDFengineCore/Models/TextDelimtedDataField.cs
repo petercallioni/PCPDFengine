@@ -6,6 +6,7 @@ namespace PCPDFengineCore.Models
     {
         private readonly string _name;
         private readonly FieldType _fieldType;
+
         public TextDelimitedDataField(string name, FieldType fieldType)
         {
             _name = name;

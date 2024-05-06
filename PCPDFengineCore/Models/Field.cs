@@ -11,7 +11,7 @@ namespace PCPDFengineCore.Models
         public FieldType Type { get => _type; }
         public object? Value { get => _value; }
         public string Name { get => _name; }
-
+        public Field() { }
         public Field(FieldType type, string name, string? value)
         {
             _type = type;

@@ -1,26 +1,36 @@
 ﻿namespace PCPDFengineCore.Models.RecordReaderOptions
 {
-    public class TextDelimitedRecordReaderOptions : TextReaderOptions
+    public class TextDelimitedRecordReaderOptions
     {
-        private List<TextDelimitedDataField> _fields;
-        private string _delimiter = ",";
-        private string _quote = "\"";
+        private List<TextDelimitedDataField> fields;
+        private string delimiter = ",";
+        private string quote = "\"";
+        private int headerLines;
+        private List<Field?> sectionIdentifiers;
+        private Field? recordHeader;
 
-        public TextDelimitedRecordReaderOptions(int headerLines, Field? recordHeader = null, IEnumerable<TextDelimitedDataField>? fields = null) : base(headerLines, recordHeader)
+        public TextDelimitedRecordReaderOptions(int headerLines, Field? recordHeader = null, List<TextDelimitedDataField>? fields = null)
         {
-            _fields = new List<TextDelimitedDataField>();
+            this.fields = new List<TextDelimitedDataField>();
 
             if (fields != null)
             {
-                _fields.AddRange(fields);
+                Fields.AddRange(fields);
             }
+
+            this.HeaderLines = headerLines;
+            this.sectionIdentifiers = new List<Field?>();
+            sectionIdentifiers.Add(recordHeader);
         }
 
         public List<TextDelimitedDataField> Fields
         {
-            get => _fields;
+            get => fields;
         }
-        public string Delimiter { get => _delimiter; set => _delimiter = value; }
-        public string Quote { get => _quote; set => _quote = value; }
+        public string Delimiter { get => delimiter; set => delimiter = value; }
+        public string Quote { get => quote; set => quote = value; }
+        public Field? RecordHeader { get => recordHeader; }
+        public List<Field?> SectionIdentifiers { get => sectionIdentifiers; }
+        public int HeaderLines { get => headerLines; set => headerLines = value; }
     }
 }
