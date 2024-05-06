@@ -1,6 +1,6 @@
 ﻿using PCPDFengineCore.Models.Enums;
 
-namespace PCPDFengineCore.Models
+namespace PCPDFengineCore.RecordReader
 {
     public class TextDelimitedDataField
     {

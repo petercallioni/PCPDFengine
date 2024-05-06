@@ -1,4 +1,4 @@
-﻿namespace PCPDFengineCore.Persistence.Records
+﻿namespace PCPDFengineCore.Persistence
 {
     public class FileInformation
     {

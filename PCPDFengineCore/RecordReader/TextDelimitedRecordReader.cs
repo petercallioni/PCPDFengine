@@ -1,7 +1,6 @@
 ﻿using CsvHelper;
 using PCPDFengineCore.Interfaces;
-using PCPDFengineCore.Models;
-using PCPDFengineCore.Models.RecordReaderOptions;
+using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using System.Globalization;
 
 namespace PCPDFengineCore.RecordReader

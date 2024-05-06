@@ -1,7 +1,7 @@
 ﻿using PCPDFengineCore.Models.Enums;
 using System.Text.RegularExpressions;
 
-namespace PCPDFengineCore.Models
+namespace PCPDFengineCore.RecordReader
 {
     public class Field
     {

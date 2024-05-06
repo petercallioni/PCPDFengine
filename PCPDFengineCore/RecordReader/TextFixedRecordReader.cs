@@ -1,6 +1,5 @@
 ﻿using PCPDFengineCore.Interfaces;
-using PCPDFengineCore.Models;
-using PCPDFengineCore.Models.RecordReaderOptions;
+using PCPDFengineCore.RecordReader.RecordReaderOptions;
 
 namespace PCPDFengineCore.RecordReader
 {

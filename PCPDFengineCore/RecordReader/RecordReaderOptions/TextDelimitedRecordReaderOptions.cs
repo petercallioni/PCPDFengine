@@ -1,4 +1,6 @@
-﻿namespace PCPDFengineCore.Models.RecordReaderOptions
+﻿using PCPDFengineCore.RecordReader;
+
+namespace PCPDFengineCore.RecordReader.RecordReaderOptions
 {
     public class TextDelimitedRecordReaderOptions
     {
@@ -18,8 +20,8 @@
                 Fields.AddRange(fields);
             }
 
-            this.HeaderLines = headerLines;
-            this.sectionIdentifiers = new List<Field?>();
+            HeaderLines = headerLines;
+            sectionIdentifiers = new List<Field?>();
             sectionIdentifiers.Add(recordHeader);
         }
 

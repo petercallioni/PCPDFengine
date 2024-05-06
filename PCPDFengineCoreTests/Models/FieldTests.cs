@@ -1,4 +1,5 @@
-﻿using PCPDFengineCoreTests;
+﻿using PCPDFengineCore.RecordReader;
+using PCPDFengineCoreTests;
 
 namespace PCPDFengineCore.Models.Tests
 {

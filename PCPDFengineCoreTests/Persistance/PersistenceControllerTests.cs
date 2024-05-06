@@ -1,8 +1,7 @@
 ﻿using PCPDFengineCore.Extensions;
-using PCPDFengineCore.Models;
 using PCPDFengineCore.Models.RecordReaderOptions;
-using PCPDFengineCore.Persistence.Records;
 using PCPDFengineCore.RecordReader;
+using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using PCPDFengineCoreTests;
 using System.Diagnostics;
 

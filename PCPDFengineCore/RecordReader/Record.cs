@@ -1,4 +1,4 @@
-﻿namespace PCPDFengineCore.Models
+﻿namespace PCPDFengineCore.RecordReader
 {
     public class Record
     {
@@ -8,8 +8,8 @@
 
         public Record(long id, List<Section> sections)
         {
-            this._id = id;
-            this._sections = sections;
+            _id = id;
+            _sections = sections;
         }
 
         public Record(string sectionName = DEFAULT_SECTION_NANE)

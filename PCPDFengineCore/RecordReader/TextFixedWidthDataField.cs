@@ -1,7 +1,7 @@
 ﻿using PCPDFengineCore.Models.Enums;
 using PCPDFengineCore.Models.RecordReaderOptions;
 
-namespace PCPDFengineCore.Models
+namespace PCPDFengineCore.RecordReader
 {
     public class TextFixedWidthDataField
     {

@@ -1,4 +1,4 @@
-﻿namespace PCPDFengineCore.Models
+﻿namespace PCPDFengineCore.RecordReader
 {
     public class Section
     {

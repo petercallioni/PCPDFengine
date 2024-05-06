@@ -1,4 +1,4 @@
-﻿using PCPDFengineCore.Models;
+﻿using PCPDFengineCore.RecordReader;
 
 namespace PCPDFengineCore.Interfaces
 {
