@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.IO.Compression;
+using System.Text.Json;
 
 namespace PCPDFengineCore.Persistence
 {
@@ -11,17 +12,44 @@ namespace PCPDFengineCore.Persistence
             serializeOptions.WriteIndented = indent;
             serializeOptions.Converters.Add(new RecordReaderInterfaceConverter());
         }
-        public void SaveState(PersistanceState state, string filePath)
+        public void SaveState(PersistanceState state, string filePath, bool overwrite = true)
         {
-            string json = JsonSerializer.Serialize(state, serializeOptions);
-            File.WriteAllText(filePath, json);
+            DirectoryInfo tempDirectory = Directory.CreateTempSubdirectory();
 
+            string json = JsonSerializer.Serialize(state, serializeOptions);
+            File.WriteAllText(Path.Combine(tempDirectory.FullName, SaveFileLayout.State), json);
+
+            if (overwrite && File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            ZipFile.CreateFromDirectory(tempDirectory.FullName, filePath);
+
+
+            tempDirectory.Delete(true);
         }
 
         public PersistanceState LoadState(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            PersistanceState state = JsonSerializer.Deserialize<PersistanceState>(json, serializeOptions)!;
+            PersistanceState state = new PersistanceState();
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.Open))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
+                    {
+                        using (Stream entryStream = entry.Open())
+                        {
+                            StreamReader reader = new StreamReader(entryStream);
+                            string json = reader.ReadToEnd();
+                            state = JsonSerializer.Deserialize<PersistanceState>(json, serializeOptions)!;
+                        }
+                    }
+                }
+            }
+
             return state;
         }
     }

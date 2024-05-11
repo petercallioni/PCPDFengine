@@ -4,6 +4,7 @@ using PCPDFengineCore.RecordReader;
 using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using PCPDFengineCoreTests;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 
 namespace PCPDFengineCore.Persistence.Tests
@@ -88,9 +89,23 @@ namespace PCPDFengineCore.Persistence.Tests
             PersistenceController controller = new PersistenceController(true);
             PersistanceState state = new PersistanceState();
             controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            string json = "";
+            using (FileStream zipToOpen = new FileStream(TestResources.TEST_SAVE_FILE, FileMode.Open))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
+                    {
+                        using (Stream entryStream = entry.Open())
+                        {
+                            StreamReader reader = new StreamReader(entryStream);
+                            json = reader.ReadToEnd();
+                        }
+                    }
+                }
+            }
 
-            string savedJson = File.ReadAllText(TestResources.TEST_SAVE_FILE);
-            Assert.IsTrue(Regex.Match(savedJson, "^\\{[\\s]").Success);
+            Assert.IsTrue(Regex.Match(json, "^\\{[\\s]").Success);
         }
 
         [TestMethod()]
@@ -100,8 +115,23 @@ namespace PCPDFengineCore.Persistence.Tests
             PersistanceState state = new PersistanceState();
             controller.SaveState(state, TestResources.TEST_SAVE_FILE);
 
-            string savedJson = File.ReadAllText(TestResources.TEST_SAVE_FILE);
-            Assert.IsTrue(Regex.Match(savedJson, "^\\{[^\\s]").Success);
+            string json = "";
+            using (FileStream zipToOpen = new FileStream(TestResources.TEST_SAVE_FILE, FileMode.Open))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
+                    {
+                        using (Stream entryStream = entry.Open())
+                        {
+                            StreamReader reader = new StreamReader(entryStream);
+                            json = reader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            Assert.IsTrue(Regex.Match(json, "^\\{[^\\s]").Success);
         }
     }
 }
