@@ -5,44 +5,48 @@ namespace PCPDFengineCore.RecordReader
 {
     public class Field
     {
-        private string _name;
-        private FieldType _type;
-        private object? _value;
-        public FieldType Type { get => _type; }
-        public object? Value { get => _value; }
-        public string Name { get => _name; }
-        public Field() { }
+        private string name;
+        private FieldType type;
+        private object? value;
+        public FieldType Type { get => type; }
+        public object? Value { get => value; }
+        public string Name { get => name; }
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public Field() { }  // Required for json serialisation.
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         public Field(FieldType type, string name, string? value)
         {
-            _type = type;
-            _name = name;
+            this.type = type;
+            this.name = name;
 
             if (value != null)
             {
-                switch (_type)
+                switch (this.type)
                 {
                     case FieldType.STRING:
-                        _value = value;
+                        this.value = value;
                         break;
                     case FieldType.INT:
                         {
                             int convertedValue;
                             bool success = int.TryParse(value, out convertedValue);
-                            _value = success ? convertedValue : "NaN";
+                            this.value = success ? convertedValue : "NaN";
                         }
                         break;
                     case FieldType.BIG_INT:
                         {
                             long convertedValue;
                             bool success = long.TryParse(value, out convertedValue);
-                            _value = success ? convertedValue : "NaN";
+                            this.value = success ? convertedValue : "NaN";
                         }
                         break;
                     case FieldType.DOUBLE:
                         {
                             double convertedValue;
                             bool success = double.TryParse(value, out convertedValue);
-                            _value = success ? convertedValue : "NaN";
+                            this.value = success ? convertedValue : "NaN";
                         }
                         break;
                     case FieldType.BOOLEAN:
@@ -50,20 +54,20 @@ namespace PCPDFengineCore.RecordReader
                             string pattern = @"^(true|yes|y|[1-9]+)$";
                             RegexOptions options = RegexOptions.IgnoreCase;
 
-                            _value = Regex.IsMatch(value, pattern, options);
+                            this.value = Regex.IsMatch(value, pattern, options);
                         }
                         break;
                     case FieldType.INSERT_IMAGE:
                     case FieldType.INSERT_PDF:
-                        _value = new FileInfo(value);
+                        this.value = new FileInfo(value);
                         break;
                     default:
-                        throw new NotImplementedException($"The data type ${_type} is not implemented yet");
+                        throw new NotImplementedException($"The data type ${this.type} is not implemented yet");
                 }
             }
             else
             {
-                _value = value;
+                this.value = value;
             }
         }
     }

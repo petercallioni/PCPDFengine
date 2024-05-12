@@ -6,7 +6,7 @@
         private readonly string style;
         private readonly byte[]? bytes;
 
-        public FontInfo(string family, string style, byte[] bytes)
+        public FontInfo(string family, string style, byte[]? bytes)
         {
             this.family = family;
             this.style = style;

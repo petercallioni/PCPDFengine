@@ -31,7 +31,6 @@ namespace PCPDFengineCore.RecordReader
 
             using (StreamReader fileStream = file.OpenText())
             {
-                string? line;
                 long fileLine = 0;
                 using (CsvReader csv = new CsvReader(fileStream, CultureInfo.InvariantCulture))
                 {
