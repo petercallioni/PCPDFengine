@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using PCPDFengineCore.Fonts;
+using System.IO.Compression;
 using System.Text.Json;
 
 namespace PCPDFengineCore.Persistence
@@ -6,14 +7,36 @@ namespace PCPDFengineCore.Persistence
     public class PersistenceController
     {
         JsonSerializerOptions serializeOptions;
+        private PersistanceState state;
+        public PersistanceState State { get => state; set => state = value; }
+
         public PersistenceController(bool indent = false)
         {
             serializeOptions = new JsonSerializerOptions();
             serializeOptions.WriteIndented = indent;
             serializeOptions.Converters.Add(new RecordReaderInterfaceConverter());
+            state = new PersistanceState();
         }
 
-        public void SaveState(PersistanceState state, string filePath, bool overwrite = true)
+        public void AddFont(FontController fontController, string familyString, string style)
+        {
+            fontController.InstalledFonts.TryGetValue(familyString, out List<FontInfo>? family);
+
+            if (family != null)
+            {
+                foreach (FontInfo? font in family.Where(x => x.Style == style))
+                {
+                    state.EmbeddedFonts.Add(font);
+                }
+            }
+        }
+
+        public void RemoveFont(string family, string style)
+        {
+            state.EmbeddedFonts.RemoveAll(x => x.Family == family && x.Style == style);
+        }
+
+        public void SaveState(string filePath, bool overwrite = true)
         {
             DirectoryInfo tempDirectory = Directory.CreateTempSubdirectory();
 
@@ -31,9 +54,9 @@ namespace PCPDFengineCore.Persistence
             tempDirectory.Delete(true);
         }
 
-        public PersistanceState LoadState(string filePath)
+        public void LoadState(string filePath)
         {
-            PersistanceState state = new PersistanceState();
+            state = new PersistanceState();
 
             using (FileStream zipToOpen = new FileStream(filePath, FileMode.Open))
             {
@@ -50,8 +73,6 @@ namespace PCPDFengineCore.Persistence
                     }
                 }
             }
-
-            return state;
         }
 
         public string GetRawPersistantStateJson(string filePath)

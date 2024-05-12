@@ -5,7 +5,6 @@ using PCPDFengineCore.RecordReader;
 using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using PCPDFengineCoreTests;
 using System.Diagnostics;
-using System.Drawing.Text;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig.Writer;
 
@@ -18,8 +17,7 @@ namespace PCPDFengineCore.Persistence.Tests
         public void CanSaveFile()
         {
             PersistenceController controller = new PersistenceController();
-            PersistanceState state = new PersistanceState();
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(new FileInfo(TestResources.TEST_SAVE_FILE).Exists);
         }
@@ -28,24 +26,23 @@ namespace PCPDFengineCore.Persistence.Tests
         public void CanLoadFileInformation()
         {
             PersistenceController controller = new PersistenceController();
-            PersistanceState state = new PersistanceState();
+
             FileInformation fileInformation = new FileInformation();
 
-            state.FileInformation = fileInformation;
+            controller.State.FileInformation = fileInformation;
 
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
 
-            PersistanceState loadedState = controller.LoadState(TestResources.TEST_SAVE_FILE);
+            controller.LoadState(TestResources.TEST_SAVE_FILE);
 
-            Trace.WriteLine(loadedState.DumpObject());
-            Assert.AreEqual(loadedState.FileInformation.DatabaseVersion, DatabaseInformation.Version);
+            Trace.WriteLine(controller.State.DumpObject());
+            Assert.AreEqual(controller.State.FileInformation.DatabaseVersion, DatabaseInformation.Version);
         }
 
         [TestMethod()]
         public void CanLoadDataReaderFixedWdith()
         {
             PersistenceController controller = new PersistenceController();
-            PersistanceState state = new PersistanceState();
 
             TextFixedRecordReaderOptions _options = new TextFixedRecordReaderOptions(1, true, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
                 new TextFixedWidthDataField[]
@@ -54,20 +51,19 @@ namespace PCPDFengineCore.Persistence.Tests
                 }.ToList());
 
             TextFixedRecordReader reader = new TextFixedRecordReader(_options);
-            state.RecordReader = reader;
+            controller.State.RecordReader = reader;
 
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
 
-            PersistanceState loadedState = controller.LoadState(TestResources.TEST_SAVE_FILE);
+            controller.LoadState(TestResources.TEST_SAVE_FILE);
 
-            Assert.AreEqual(((TextFixedRecordReader)loadedState.RecordReader).Options.Fields.First().Name, "Header 0");
+            Assert.AreEqual(((TextFixedRecordReader)controller.State.RecordReader).Options.Fields.First().Name, "Header 0");
         }
 
         [TestMethod()]
         public void CanLoadDataReaderDelimited()
         {
             PersistenceController controller = new PersistenceController();
-            PersistanceState state = new PersistanceState();
 
             TextDelimitedRecordReaderOptions options = new TextDelimitedRecordReaderOptions(1, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
                 new TextDelimitedDataField[]
@@ -76,21 +72,20 @@ namespace PCPDFengineCore.Persistence.Tests
                 }.ToList());
 
             TextDelimitedRecordReader reader = new TextDelimitedRecordReader(options);
-            state.RecordReader = reader;
+            controller.State.RecordReader = reader;
 
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
 
-            PersistanceState loadedState = controller.LoadState(TestResources.TEST_SAVE_FILE);
+            controller.LoadState(TestResources.TEST_SAVE_FILE);
 
-            Assert.AreEqual(((TextDelimitedRecordReader)loadedState.RecordReader).Options.Fields.First().Name, "Header 0");
+            Assert.AreEqual(((TextDelimitedRecordReader)controller.State.RecordReader).Options.Fields.First().Name, "Header 0");
         }
 
         [TestMethod()]
         public void CreatePersistentStateIndent()
         {
             PersistenceController controller = new PersistenceController(true);
-            PersistanceState state = new PersistanceState();
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
             string json = controller.GetRawPersistantStateJson(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(Regex.Match(json, "^\\{[\\s]").Success);
@@ -100,8 +95,7 @@ namespace PCPDFengineCore.Persistence.Tests
         public void CreatePersistentStateNoIndent()
         {
             PersistenceController controller = new PersistenceController();
-            PersistanceState state = new PersistanceState();
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
 
             string json = controller.GetRawPersistantStateJson(TestResources.TEST_SAVE_FILE);
 
@@ -113,25 +107,55 @@ namespace PCPDFengineCore.Persistence.Tests
         {
             PersistenceController controller = new PersistenceController();
             FontController fontController = new FontController();
-            PersistanceState state = new PersistanceState();
 
-            Dictionary<string, List<FontInfo>> fonts = fontController.GetInstalledTtfFonts();
+            controller.AddFont(fontController, "Arial", "Regular");
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
 
-            KeyValuePair<string, List<FontInfo>> arial = fonts.GetEntry("Arial");
-            state.AddedFonts.Add(arial.Key, arial.Value);
-            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+            controller.LoadState(TestResources.TEST_SAVE_FILE);
 
-            PersistanceState loadedState = controller.LoadState(TestResources.TEST_SAVE_FILE);
-
-            PrivateFontCollection privateFontCollection = new PrivateFontCollection();
-
-            arial = loadedState.AddedFonts.GetEntry("Arial");
-            byte[] fontBytes = arial.Value.Where(x => x.Style == "Regular").First().Bytes;
+            FontInfo arial = fontController.GetFontInfo("Arial", "Regular");
 
             PdfDocumentBuilder builder = new PdfDocumentBuilder();
-            PdfDocumentBuilder.AddedFont font = builder.AddTrueTypeFont(fontBytes);
+            PdfDocumentBuilder.AddedFont font = builder.AddTrueTypeFont(arial.Bytes);
 
             Assert.IsTrue(true); // At this point the font loaded correctly.
+        }
+
+        [TestMethod()]
+        public void AddNonEmbedFontToState()
+        {
+            PersistenceController controller = new PersistenceController();
+            FontController fontController = new FontController(false);
+
+            controller.State.EmbedFonts = false;
+
+            controller.AddFont(fontController, "Arial", "Regular");
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
+
+            controller.LoadState(TestResources.TEST_SAVE_FILE);
+
+            FontInfo arial = fontController.GetFontInfo("Arial", "Regular");
+
+            Assert.IsTrue(!arial.IsEmbedded && arial.Bytes == null);
+        }
+
+        [TestMethod()]
+        public void RemoveFontFromState()
+        {
+            PersistenceController controller = new PersistenceController();
+            FontController fontController = new FontController();
+            controller.State.EmbedFonts = false;
+
+            controller.AddFont(fontController, "Arial", "Regular");
+            controller.SaveState(TestResources.TEST_SAVE_FILE);
+
+            controller.LoadState(TestResources.TEST_SAVE_FILE);
+
+            Assert.IsTrue(controller.State.EmbeddedFonts.Count == 1);
+
+            controller.RemoveFont("Arial", "Regular");
+
+            Assert.IsTrue(controller.State.EmbeddedFonts.Count == 0);
         }
     }
 }

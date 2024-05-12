@@ -1,4 +1,5 @@
 ﻿using FreeTypeSharp;
+using PCPDFengineCore.Persistence;
 using System.Runtime.InteropServices;
 using static FreeTypeSharp.FT;
 
@@ -6,11 +7,55 @@ namespace PCPDFengineCore.Fonts
 {
     public class FontController
     {
-        private FontInfo GetFontInformation(string ttfFilePath)
+        private Dictionary<string, List<FontInfo>> installedFonts;
+        private bool embedFonts;
+
+        public FontController(bool embedFonts = true)
+        {
+            this.embedFonts = embedFonts;
+            this.installedFonts = LoadInstalledTtfFonts(embedFonts);
+        }
+
+        public Dictionary<string, List<FontInfo>> InstalledFonts { get => installedFonts; }
+        public bool EmbedFonts
+        {
+            get => embedFonts;
+            set
+            {
+                if (embedFonts != value)
+                {
+                    embedFonts = value;
+                    installedFonts = LoadInstalledTtfFonts(embedFonts);
+                }
+            }
+        }
+
+        public FontInfo GetFontInfo(string fontName, string style, PersistanceState? state = null)
+        {
+            if (state != null)
+            {
+                List<FontInfo> embeddedFont = state.EmbeddedFonts.Where(x => x.IsEmbedded == true
+                    && x.Family == fontName
+                    && x.Style == style).ToList();
+
+                if (embeddedFont.Count > 0)
+                {
+                    return embeddedFont.First();
+                }
+            }
+
+            // either no state or embedded font not found
+
+            FontInfo installedFont = LoadSpecificFont(fontName, style);
+
+            return installedFont;
+        }
+
+        private FontInfo GetFontInformation(string ttfFilePath, bool loadFontBytes)
         {
             string family = "";
             string style = "";
-            byte[] bytes = File.ReadAllBytes(ttfFilePath);
+            byte[]? bytes = embedFonts ? File.ReadAllBytes(ttfFilePath) : null;
 
             unsafe
             {
@@ -39,7 +84,7 @@ namespace PCPDFengineCore.Fonts
             return new FontInfo(family, style, bytes);
         }
 
-        public Dictionary<string, List<FontInfo>> GetInstalledTtfFonts()
+        private Dictionary<string, List<FontInfo>> LoadInstalledTtfFonts(bool embedFonts)
         {
             string fontsfolder = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
 
@@ -48,7 +93,7 @@ namespace PCPDFengineCore.Fonts
 
             foreach (FileInfo fontFile in installedFontsFolder.EnumerateFiles().Where(x => x.Name.ToUpper().EndsWith(".TTF")))
             {
-                FontInfo fontInfo = GetFontInformation(fontFile.FullName);
+                FontInfo fontInfo = GetFontInformation(fontFile.FullName, embedFonts);
                 bool exists = fonts.TryGetValue(fontInfo.Family, out List<FontInfo>? list);
 
                 if (!exists)
@@ -61,6 +106,22 @@ namespace PCPDFengineCore.Fonts
             }
 
             return fonts;
+        }
+
+        private FontInfo LoadSpecificFont(string family, string style)
+        {
+            string fontsfolder = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+
+            DirectoryInfo installedFontsFolder = new DirectoryInfo(fontsfolder);
+
+            foreach (FileInfo fontFile in installedFontsFolder.EnumerateFiles().Where(x => x.Name.ToUpper().EndsWith(".TTF")))
+            {
+                FontInfo fontInfo = GetFontInformation(fontFile.FullName, false);
+
+                return fontInfo;
+            }
+
+            throw new ArgumentException($"Font: {family} {style} is not found.");
         }
     }
 }
