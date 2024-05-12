@@ -18,7 +18,7 @@ namespace PCPDFengineCore.Persistence
             fileInformation = null;
             recordReader = null;
             embeddedFonts = new List<FontInfo>();
-            embedFonts = false;
+            embedFonts = true;
         }
 
         public FileInformation? FileInformation { get => fileInformation; set => fileInformation = value; }

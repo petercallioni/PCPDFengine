@@ -8,7 +8,20 @@ namespace PCPDFengineCore.Persistence
     {
         JsonSerializerOptions serializeOptions;
         private PersistanceState state;
+        private FontController? fontController;
+
         public PersistanceState State { get => state; set => state = value; }
+        private FontController FontController
+        {
+            get
+            {
+                if (fontController == null)
+                {
+                    throw new NullReferenceException("FontController called before it is set.");
+                }
+                return fontController;
+            }
+        }
 
         public PersistenceController(bool indent = false)
         {
@@ -18,9 +31,25 @@ namespace PCPDFengineCore.Persistence
             state = new PersistanceState();
         }
 
-        public void AddFont(FontController fontController, string familyString, string style)
+        public void SetEmbedFonts(bool embedFonts)
         {
-            fontController.InstalledFonts.TryGetValue(familyString, out List<FontInfo>? family);
+            if (State.EmbedFonts != embedFonts)
+            {
+                State.EmbedFonts = embedFonts;
+
+                FontController.LoadInstalledTtfFonts();
+            }
+
+        }
+
+        public void SetFontController(FontController fontController)
+        {
+            this.fontController = fontController;
+        }
+
+        public void AddFont(string familyString, string style)
+        {
+            FontController.InstalledFonts.TryGetValue(familyString, out List<FontInfo>? family);
 
             if (family != null)
             {

@@ -84,6 +84,8 @@ namespace PCPDFengineCore.Persistence.Tests
         [TestMethod()]
         public void CreatePersistentStateIndent()
         {
+            MasterController masterController = new MasterController();
+
             PersistenceController controller = new PersistenceController(true);
             controller.SaveState(TestResources.TEST_SAVE_FILE);
             string json = controller.GetRawPersistantStateJson(TestResources.TEST_SAVE_FILE);
@@ -105,15 +107,14 @@ namespace PCPDFengineCore.Persistence.Tests
         [TestMethod()]
         public void AddFontToState()
         {
-            PersistenceController controller = new PersistenceController();
-            FontController fontController = new FontController();
+            MasterController masterController = new MasterController();
 
-            controller.AddFont(fontController, "Arial", "Regular");
-            controller.SaveState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.AddFont("Arial", "Regular");
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
-            controller.LoadState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
 
-            FontInfo arial = fontController.GetFontInfo("Arial", "Regular");
+            FontInfo arial = masterController.FontController.GetFontInfo("Arial", "Regular");
 
             PdfDocumentBuilder builder = new PdfDocumentBuilder();
             PdfDocumentBuilder.AddedFont font = builder.AddTrueTypeFont(arial.Bytes);
@@ -124,17 +125,15 @@ namespace PCPDFengineCore.Persistence.Tests
         [TestMethod()]
         public void AddNonEmbedFontToState()
         {
-            PersistenceController controller = new PersistenceController();
-            FontController fontController = new FontController(false);
+            MasterController masterController = new MasterController();
+            masterController.PersistenceController.SetEmbedFonts(false);
 
-            controller.State.EmbedFonts = false;
+            masterController.PersistenceController.AddFont("Arial", "Regular");
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
-            controller.AddFont(fontController, "Arial", "Regular");
-            controller.SaveState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
 
-            controller.LoadState(TestResources.TEST_SAVE_FILE);
-
-            FontInfo arial = fontController.GetFontInfo("Arial", "Regular");
+            FontInfo arial = masterController.FontController.GetFontInfo("Arial", "Regular");
 
             Assert.IsTrue(!arial.IsEmbedded && arial.Bytes == null);
         }
@@ -142,20 +141,19 @@ namespace PCPDFengineCore.Persistence.Tests
         [TestMethod()]
         public void RemoveFontFromState()
         {
-            PersistenceController controller = new PersistenceController();
-            FontController fontController = new FontController();
-            controller.State.EmbedFonts = false;
+            MasterController masterController = new MasterController();
 
-            controller.AddFont(fontController, "Arial", "Regular");
-            controller.SaveState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.SetEmbedFonts(false);
+            masterController.PersistenceController.AddFont("Arial", "Regular");
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
-            controller.LoadState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
 
-            Assert.IsTrue(controller.State.EmbeddedFonts.Count == 1);
+            Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 1);
 
-            controller.RemoveFont("Arial", "Regular");
+            masterController.PersistenceController.RemoveFont("Arial", "Regular");
 
-            Assert.IsTrue(controller.State.EmbeddedFonts.Count == 0);
+            Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 0);
         }
     }
 }

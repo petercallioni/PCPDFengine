@@ -7,34 +7,48 @@ namespace PCPDFengineCore.Fonts
 {
     public class FontController
     {
-        private Dictionary<string, List<FontInfo>> installedFonts;
-        private bool embedFonts;
+        private Dictionary<string, List<FontInfo>>? installedFonts;
 
-        public FontController(bool embedFonts = true)
+        private PersistenceController? persistenceController;
+        private PersistenceController PersistenceController
         {
-            this.embedFonts = embedFonts;
-            this.installedFonts = LoadInstalledTtfFonts(embedFonts);
-        }
-
-        public Dictionary<string, List<FontInfo>> InstalledFonts { get => installedFonts; }
-        public bool EmbedFonts
-        {
-            get => embedFonts;
-            set
+            get
             {
-                if (embedFonts != value)
+                if (persistenceController == null)
                 {
-                    embedFonts = value;
-                    installedFonts = LoadInstalledTtfFonts(embedFonts);
+                    throw new NullReferenceException("PersistenceController called before it is set.");
                 }
+                return persistenceController;
             }
         }
 
-        public FontInfo GetFontInfo(string fontName, string style, PersistanceState? state = null)
+        public FontController()
         {
-            if (state != null)
+            installedFonts = null;
+        }
+
+        public void SetPersistenceController(PersistenceController persistenceController)
+        {
+            this.persistenceController = persistenceController;
+        }
+
+        public Dictionary<string, List<FontInfo>> InstalledFonts
+        {
+            get
             {
-                List<FontInfo> embeddedFont = state.EmbeddedFonts.Where(x => x.IsEmbedded == true
+                if (installedFonts == null)
+                {
+                    throw new NullReferenceException("InstalledFonts called before loading installed fonts.");
+                }
+                return installedFonts;
+            }
+        }
+
+        public FontInfo GetFontInfo(string fontName, string style)
+        {
+            if (PersistenceController.State != null)
+            {
+                List<FontInfo> embeddedFont = PersistenceController.State.EmbeddedFonts.Where(x => x.IsEmbedded == true
                     && x.Family == fontName
                     && x.Style == style).ToList();
 
@@ -51,11 +65,14 @@ namespace PCPDFengineCore.Fonts
             return installedFont;
         }
 
-        private FontInfo GetFontInformation(string ttfFilePath, bool loadFontBytes)
+        private FontInfo GetFontInformation(string ttfFilePath, bool? loadFontBytesOverride = null)
         {
             string family = "";
             string style = "";
-            byte[]? bytes = embedFonts ? File.ReadAllBytes(ttfFilePath) : null;
+
+            bool loadBytes = loadFontBytesOverride ?? PersistenceController.State.EmbedFonts;
+
+            byte[]? bytes = loadBytes ? File.ReadAllBytes(ttfFilePath) : null;
 
             unsafe
             {
@@ -84,7 +101,7 @@ namespace PCPDFengineCore.Fonts
             return new FontInfo(family, style, bytes);
         }
 
-        private Dictionary<string, List<FontInfo>> LoadInstalledTtfFonts(bool embedFonts)
+        public void LoadInstalledTtfFonts()
         {
             string fontsfolder = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
 
@@ -93,7 +110,7 @@ namespace PCPDFengineCore.Fonts
 
             foreach (FileInfo fontFile in installedFontsFolder.EnumerateFiles().Where(x => x.Name.ToUpper().EndsWith(".TTF")))
             {
-                FontInfo fontInfo = GetFontInformation(fontFile.FullName, embedFonts);
+                FontInfo fontInfo = GetFontInformation(fontFile.FullName);
                 bool exists = fonts.TryGetValue(fontInfo.Family, out List<FontInfo>? list);
 
                 if (!exists)
@@ -105,7 +122,7 @@ namespace PCPDFengineCore.Fonts
                 list!.Add(fontInfo);
             }
 
-            return fonts;
+            installedFonts = fonts;
         }
 
         private FontInfo LoadSpecificFont(string family, string style)
