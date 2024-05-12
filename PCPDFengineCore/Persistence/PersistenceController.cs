@@ -12,6 +12,7 @@ namespace PCPDFengineCore.Persistence
             serializeOptions.WriteIndented = indent;
             serializeOptions.Converters.Add(new RecordReaderInterfaceConverter());
         }
+
         public void SaveState(PersistanceState state, string filePath, bool overwrite = true)
         {
             DirectoryInfo tempDirectory = Directory.CreateTempSubdirectory();
@@ -45,6 +46,28 @@ namespace PCPDFengineCore.Persistence
                             StreamReader reader = new StreamReader(entryStream);
                             string json = reader.ReadToEnd();
                             state = JsonSerializer.Deserialize<PersistanceState>(json, serializeOptions)!;
+                        }
+                    }
+                }
+            }
+
+            return state;
+        }
+
+        public string GetRawPersistantStateJson(string filePath)
+        {
+            string state = "";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.Open))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
+                    {
+                        using (Stream entryStream = entry.Open())
+                        {
+                            StreamReader reader = new StreamReader(entryStream);
+                            state = reader.ReadToEnd();
                         }
                     }
                 }

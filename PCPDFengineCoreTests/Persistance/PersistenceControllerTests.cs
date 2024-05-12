@@ -4,7 +4,6 @@ using PCPDFengineCore.RecordReader;
 using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using PCPDFengineCoreTests;
 using System.Diagnostics;
-using System.IO.Compression;
 using System.Text.RegularExpressions;
 
 namespace PCPDFengineCore.Persistence.Tests
@@ -13,7 +12,7 @@ namespace PCPDFengineCore.Persistence.Tests
     public class PersistenceControllerTests
     {
         [TestMethod()]
-        public void TestSaveFile()
+        public void CanSaveFile()
         {
             PersistenceController controller = new PersistenceController();
             PersistanceState state = new PersistanceState();
@@ -70,7 +69,7 @@ namespace PCPDFengineCore.Persistence.Tests
             TextDelimitedRecordReaderOptions options = new TextDelimitedRecordReaderOptions(1, new Field(PCPDFengineCore.Models.Enums.FieldType.STRING, "Header 0", "HEAD"),
                 new TextDelimitedDataField[]
                 {
-                        new TextDelimitedDataField("Header 0", PCPDFengineCore.Models.Enums.FieldType.STRING),
+                    new TextDelimitedDataField("Header 0", PCPDFengineCore.Models.Enums.FieldType.STRING),
                 }.ToList());
 
             TextDelimitedRecordReader reader = new TextDelimitedRecordReader(options);
@@ -84,52 +83,24 @@ namespace PCPDFengineCore.Persistence.Tests
         }
 
         [TestMethod()]
-        public void PersistenceControllerIndentTest()
+        public void CreatePersistentStateIndent()
         {
             PersistenceController controller = new PersistenceController(true);
             PersistanceState state = new PersistanceState();
             controller.SaveState(state, TestResources.TEST_SAVE_FILE);
-            string json = "";
-            using (FileStream zipToOpen = new FileStream(TestResources.TEST_SAVE_FILE, FileMode.Open))
-            {
-                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
-                {
-                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
-                    {
-                        using (Stream entryStream = entry.Open())
-                        {
-                            StreamReader reader = new StreamReader(entryStream);
-                            json = reader.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            string json = controller.GetRawPersistantStateJson(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(Regex.Match(json, "^\\{[\\s]").Success);
         }
 
         [TestMethod()]
-        public void PersistenceControllerNoIndentTest()
+        public void CreatePersistentStateNoIndent()
         {
             PersistenceController controller = new PersistenceController();
             PersistanceState state = new PersistanceState();
             controller.SaveState(state, TestResources.TEST_SAVE_FILE);
 
-            string json = "";
-            using (FileStream zipToOpen = new FileStream(TestResources.TEST_SAVE_FILE, FileMode.Open))
-            {
-                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
-                {
-                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
-                    {
-                        using (Stream entryStream = entry.Open())
-                        {
-                            StreamReader reader = new StreamReader(entryStream);
-                            json = reader.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            string json = controller.GetRawPersistantStateJson(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(Regex.Match(json, "^\\{[^\\s]").Success);
         }

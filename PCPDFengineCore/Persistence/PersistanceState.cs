@@ -4,11 +4,13 @@ namespace PCPDFengineCore.Persistence
 {
     public class PersistanceState
     {
-        private FileInformation _fileInformation;
-        private IRecordReader _recordReader;
+        private FileInformation fileInformation;
+        private IRecordReader recordReader;
+        private Dictionary<string, List<byte[]>> addedFonts;
 
-        public FileInformation FileInformation { get => _fileInformation; set => _fileInformation = value; }
+        public FileInformation FileInformation { get => fileInformation; set => fileInformation = value; }
 
-        public IRecordReader RecordReader { get => _recordReader; set => _recordReader = value; }
+        public IRecordReader RecordReader { get => recordReader; set => recordReader = value; }
+        public Dictionary<string, List<byte[]>> AddedFonts { get => addedFonts; set => addedFonts = value; }
     }
 }
