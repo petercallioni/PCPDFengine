@@ -1,10 +1,13 @@
 ﻿using PCPDFengineCore.Extensions;
+using PCPDFengineCore.Fonts;
 using PCPDFengineCore.Models.RecordReaderOptions;
 using PCPDFengineCore.RecordReader;
 using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using PCPDFengineCoreTests;
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Text.RegularExpressions;
+using UglyToad.PdfPig.Writer;
 
 namespace PCPDFengineCore.Persistence.Tests
 {
@@ -103,6 +106,32 @@ namespace PCPDFengineCore.Persistence.Tests
             string json = controller.GetRawPersistantStateJson(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(Regex.Match(json, "^\\{[^\\s]").Success);
+        }
+
+        [TestMethod()]
+        public void AddFontToState()
+        {
+            PersistenceController controller = new PersistenceController();
+            FontController fontController = new FontController();
+            PersistanceState state = new PersistanceState();
+
+            Dictionary<string, List<FontInfo>> fonts = fontController.GetInstalledTtfFonts();
+
+            KeyValuePair<string, List<FontInfo>> arial = fonts.GetEntry("Arial");
+            state.AddedFonts.Add(arial.Key, arial.Value);
+            controller.SaveState(state, TestResources.TEST_SAVE_FILE);
+
+            PersistanceState loadedState = controller.LoadState(TestResources.TEST_SAVE_FILE);
+
+            PrivateFontCollection privateFontCollection = new PrivateFontCollection();
+
+            arial = loadedState.AddedFonts.GetEntry("Arial");
+            byte[] fontBytes = arial.Value.Where(x => x.Style == "Regular").First().Bytes;
+
+            PdfDocumentBuilder builder = new PdfDocumentBuilder();
+            PdfDocumentBuilder.AddedFont font = builder.AddTrueTypeFont(fontBytes);
+
+            Assert.IsTrue(true); // At this point the font loaded correctly.
         }
     }
 }

@@ -4,10 +4,9 @@ using static FreeTypeSharp.FT;
 
 namespace PCPDFengineCore.Fonts
 {
-    public partial class FontController
+    public class FontController
     {
-
-        public FontInfo GetFontInformation(string ttfFilePath)
+        private FontInfo GetFontInformation(string ttfFilePath)
         {
             string family = "";
             string style = "";
