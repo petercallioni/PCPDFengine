@@ -2,6 +2,7 @@
 {
     public static class SaveFileLayout
     {
-        public static string State = "State.json";
+        public static string STATE_JSON = "State.json";
+        public static string FONTS_FOLDER = "Fonts";
     }
 }

@@ -114,10 +114,10 @@ namespace PCPDFengineCore.Persistence.Tests
 
             masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
 
-            FontInfo arial = masterController.FontController.GetFontInfo("Arial", "Regular");
+            byte[] arial = masterController.FontController.GetFont("Arial", "Regular");
 
             PdfDocumentBuilder builder = new PdfDocumentBuilder();
-            PdfDocumentBuilder.AddedFont font = builder.AddTrueTypeFont(arial.Bytes);
+            PdfDocumentBuilder.AddedFont font = builder.AddTrueTypeFont(arial);
 
             Assert.IsTrue(true); // At this point the font loaded correctly.
         }
@@ -135,7 +135,7 @@ namespace PCPDFengineCore.Persistence.Tests
 
             FontInfo arial = masterController.FontController.GetFontInfo("Arial", "Regular");
 
-            Assert.IsTrue(!arial.IsEmbedded && arial.Bytes == null);
+            Assert.IsTrue(arial.Bytes == null);
         }
 
         [TestMethod()]
@@ -143,7 +143,7 @@ namespace PCPDFengineCore.Persistence.Tests
         {
             MasterController masterController = new MasterController();
 
-            masterController.PersistenceController.SetEmbedFonts(false);
+            masterController.PersistenceController.SetEmbedFonts(true);
             masterController.PersistenceController.AddFont("Arial", "Regular");
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
@@ -152,6 +152,7 @@ namespace PCPDFengineCore.Persistence.Tests
             Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 1);
 
             masterController.PersistenceController.RemoveFont("Arial", "Regular");
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 0);
         }

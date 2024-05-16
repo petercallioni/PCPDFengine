@@ -1,4 +1,5 @@
-﻿using PCPDFengineCore.Fonts;
+﻿using PCPDFengineCore.Extensions;
+using PCPDFengineCore.Fonts;
 using System.IO.Compression;
 using System.Text.Json;
 
@@ -10,6 +11,7 @@ namespace PCPDFengineCore.Persistence
         private PersistanceState state;
         private FontController? fontController;
 
+        private byte[]? loadedSaveFile;
         public PersistanceState State { get => state; set => state = value; }
         private FontController FontController
         {
@@ -22,6 +24,45 @@ namespace PCPDFengineCore.Persistence
                 return fontController;
             }
         }
+
+        public byte[]? LoadedStateFile { get => loadedSaveFile; }
+
+        private void LoadEmbededFonts()
+        {
+            if (state.EmbedFonts)
+            {
+                foreach (FontInfo font in state.EmbeddedFonts)
+                {
+                    font.Bytes = GetFileFromLoadedState(Path.Combine(SaveFileLayout.FONTS_FOLDER, font.Filename));
+                }
+            }
+        }
+
+        public byte[] GetFileFromLoadedState(string path)
+        {
+            if (loadedSaveFile == null)
+            {
+                throw new NullReferenceException("Tried to read from non-existent save file.");
+            }
+
+            using (MemoryStream memoryStream = new MemoryStream(loadedSaveFile))
+            {
+                using (ZipArchive archive = new ZipArchive(memoryStream, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.FullName == path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)))
+                    {
+                        using (Stream entryStream = entry.Open())
+                        {
+                            StreamReader reader = new StreamReader(entryStream);
+                            return entryStream.ReadFully();
+                        }
+                    }
+                }
+            }
+
+            return null!;
+        }
+
 
         public PersistenceController(bool indent = false)
         {
@@ -70,15 +111,25 @@ namespace PCPDFengineCore.Persistence
             DirectoryInfo tempDirectory = Directory.CreateTempSubdirectory();
 
             string json = JsonSerializer.Serialize(state, serializeOptions);
-            File.WriteAllText(Path.Combine(tempDirectory.FullName, SaveFileLayout.State), json);
+            File.WriteAllText(Path.Combine(tempDirectory.FullName, SaveFileLayout.STATE_JSON), json);
+
+            DirectoryInfo fontsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory.FullName, SaveFileLayout.FONTS_FOLDER));
+
+            if (state.EmbedFonts)
+            {
+                foreach (FontInfo font in state.EmbeddedFonts)
+                {
+                    File.WriteAllBytes(Path.Combine(fontsDirectory.FullName, font.Filename), font.Bytes!);
+                }
+            }
+
 
             if (overwrite && File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
 
-            ZipFile.CreateFromDirectory(tempDirectory.FullName, filePath);
-
+            ZipFile.CreateFromDirectory(tempDirectory.FullName, filePath, CompressionLevel.SmallestSize, false);
 
             tempDirectory.Delete(true);
         }
@@ -89,9 +140,10 @@ namespace PCPDFengineCore.Persistence
 
             using (FileStream zipToOpen = new FileStream(filePath, FileMode.Open))
             {
+                loadedSaveFile = zipToOpen.ReadFully();
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
                 {
-                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.STATE_JSON))
                     {
                         using (Stream entryStream = entry.Open())
                         {
@@ -102,6 +154,8 @@ namespace PCPDFengineCore.Persistence
                     }
                 }
             }
+
+            LoadEmbededFonts();
         }
 
         public string GetRawPersistantStateJson(string filePath)
@@ -112,7 +166,7 @@ namespace PCPDFengineCore.Persistence
             {
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
                 {
-                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.State))
+                    foreach (ZipArchiveEntry entry in archive.Entries.Where(x => x.Name == SaveFileLayout.STATE_JSON))
                     {
                         using (Stream entryStream = entry.Open())
                         {

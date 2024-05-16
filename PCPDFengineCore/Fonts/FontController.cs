@@ -48,7 +48,7 @@ namespace PCPDFengineCore.Fonts
         {
             if (PersistenceController.State != null)
             {
-                List<FontInfo> embeddedFont = PersistenceController.State.EmbeddedFonts.Where(x => x.IsEmbedded == true
+                List<FontInfo> embeddedFont = PersistenceController.State.EmbeddedFonts.Where(x => x.Bytes != null
                     && x.Family == fontName
                     && x.Style == style).ToList();
 
@@ -98,7 +98,30 @@ namespace PCPDFengineCore.Fonts
                 Marshal.FreeHGlobal((IntPtr)ttfFileBytes);
             }
 
-            return new FontInfo(family, style, bytes);
+            FontInfo font = new FontInfo(family, style, new FileInfo(ttfFilePath).Name);
+            font.Bytes = bytes;
+            return font;
+        }
+
+        public byte[] GetFont(string family, string style)
+        {
+            installedFonts!.TryGetValue(family, out List<FontInfo>? installedStyles);
+
+            FontInfo? embeddedFont = persistenceController?.State.EmbeddedFonts.Where(x => x.Family == family && x.Style == style && x.Bytes != null).ToList().FirstOrDefault();
+
+            if (embeddedFont != null)
+            {
+                return embeddedFont.Bytes!;
+            }
+
+            FontInfo? installedFont = installedStyles?.Where(x => x.Style == style).FirstOrDefault();
+
+            if (installedFont != null)
+            {
+                return installedFont.Bytes!;
+            }
+
+            throw new ArgumentException($"Font: {family} {style} is not found.");
         }
 
         public void LoadInstalledTtfFonts()
