@@ -109,7 +109,7 @@ namespace PCPDFengineCore.Persistence.Tests
         {
             MasterController masterController = new MasterController();
 
-            masterController.PersistenceController.AddFont("Arial", "Regular");
+            masterController.FontController.AddFontToState("Arial", "Regular");
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
             masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
@@ -126,9 +126,9 @@ namespace PCPDFengineCore.Persistence.Tests
         public void AddNonEmbedFontToState()
         {
             MasterController masterController = new MasterController();
-            masterController.PersistenceController.SetEmbedFonts(false);
+            masterController.FontController.SetEmbedFonts(false);
 
-            masterController.PersistenceController.AddFont("Arial", "Regular");
+            masterController.FontController.AddFontToState("Arial", "Regular");
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
             masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
@@ -143,15 +143,15 @@ namespace PCPDFengineCore.Persistence.Tests
         {
             MasterController masterController = new MasterController();
 
-            masterController.PersistenceController.SetEmbedFonts(true);
-            masterController.PersistenceController.AddFont("Arial", "Regular");
+            masterController.FontController.SetEmbedFonts(true);
+            masterController.FontController.AddFontToState("Arial", "Regular");
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
             masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 1);
 
-            masterController.PersistenceController.RemoveFont("Arial", "Regular");
+            masterController.FontController.RemoveFontFromState("Arial", "Regular");
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
 
             Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 0);

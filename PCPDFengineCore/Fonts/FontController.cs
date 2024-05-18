@@ -163,5 +163,33 @@ namespace PCPDFengineCore.Fonts
 
             throw new ArgumentException($"Font: {family} {style} is not found.");
         }
+
+        public void AddFontToState(string familyString, string style)
+        {
+            InstalledFonts.TryGetValue(familyString, out List<FontInfo>? family);
+
+            if (family != null)
+            {
+                foreach (FontInfo? font in family.Where(x => x.Style == style))
+                {
+                    PersistenceController.State.EmbeddedFonts.Add(font);
+                }
+            }
+        }
+
+        public void RemoveFontFromState(string family, string style)
+        {
+            PersistenceController.State.EmbeddedFonts.RemoveAll(x => x.Family == family && x.Style == style);
+        }
+
+        public void SetEmbedFonts(bool embedFonts)
+        {
+            if (PersistenceController.State.EmbedFonts != embedFonts)
+            {
+                PersistenceController.State.EmbedFonts = embedFonts;
+
+                LoadInstalledTtfFonts();
+            }
+        }
     }
 }

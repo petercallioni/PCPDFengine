@@ -72,38 +72,9 @@ namespace PCPDFengineCore.Persistence
             state = new PersistanceState();
         }
 
-        public void SetEmbedFonts(bool embedFonts)
-        {
-            if (State.EmbedFonts != embedFonts)
-            {
-                State.EmbedFonts = embedFonts;
-
-                FontController.LoadInstalledTtfFonts();
-            }
-
-        }
-
         public void SetFontController(FontController fontController)
         {
             this.fontController = fontController;
-        }
-
-        public void AddFont(string familyString, string style)
-        {
-            FontController.InstalledFonts.TryGetValue(familyString, out List<FontInfo>? family);
-
-            if (family != null)
-            {
-                foreach (FontInfo? font in family.Where(x => x.Style == style))
-                {
-                    state.EmbeddedFonts.Add(font);
-                }
-            }
-        }
-
-        public void RemoveFont(string family, string style)
-        {
-            state.EmbeddedFonts.RemoveAll(x => x.Family == family && x.Style == style);
         }
 
         public void SaveState(string filePath, bool overwrite = true)
