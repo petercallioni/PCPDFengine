@@ -1,5 +1,6 @@
 ﻿using PCPDFengineCore.Extensions;
 using PCPDFengineCore.Fonts;
+using PCPDFengineCore.Images;
 using System.IO.Compression;
 using System.Text.Json;
 
@@ -10,20 +11,10 @@ namespace PCPDFengineCore.Persistence
         JsonSerializerOptions serializeOptions;
         private PersistanceState state;
         private FontController? fontController;
+        private ImageController? imageController;
 
         private byte[]? loadedSaveFile;
         public PersistanceState State { get => state; set => state = value; }
-        private FontController FontController
-        {
-            get
-            {
-                if (fontController == null)
-                {
-                    throw new NullReferenceException("FontController called before it is set.");
-                }
-                return fontController;
-            }
-        }
 
         public byte[]? LoadedStateFile { get => loadedSaveFile; }
 
@@ -35,6 +26,14 @@ namespace PCPDFengineCore.Persistence
                 {
                     font.Bytes = GetFileFromLoadedState(Path.Combine(SaveFileLayout.FONTS_FOLDER, font.Filename));
                 }
+            }
+        }
+
+        private void LoadEmbededImages()
+        {
+            foreach (ImageInfo image in state.EmbeddedImages)
+            {
+                image.Bytes = GetFileFromLoadedState(Path.Combine(SaveFileLayout.IMAGES_FOLDER, image.Filename));
             }
         }
 
@@ -77,6 +76,11 @@ namespace PCPDFengineCore.Persistence
             this.fontController = fontController;
         }
 
+        public void SetImageController(ImageController imageController)
+        {
+            this.imageController = imageController;
+        }
+
         public void SaveState(string filePath, bool overwrite = true)
         {
             DirectoryInfo tempDirectory = Directory.CreateTempSubdirectory();
@@ -85,6 +89,7 @@ namespace PCPDFengineCore.Persistence
             File.WriteAllText(Path.Combine(tempDirectory.FullName, SaveFileLayout.STATE_JSON), json);
 
             DirectoryInfo fontsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory.FullName, SaveFileLayout.FONTS_FOLDER));
+            DirectoryInfo imagesDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory.FullName, SaveFileLayout.IMAGES_FOLDER));
 
             if (state.EmbedFonts)
             {
@@ -94,6 +99,10 @@ namespace PCPDFengineCore.Persistence
                 }
             }
 
+            foreach (ImageInfo image in state.EmbeddedImages)
+            {
+                File.WriteAllBytes(Path.Combine(imagesDirectory.FullName, image.Filename), image.Bytes!);
+            }
 
             if (overwrite && File.Exists(filePath))
             {
@@ -127,6 +136,7 @@ namespace PCPDFengineCore.Persistence
             }
 
             LoadEmbededFonts();
+            LoadEmbededImages();
         }
 
         public string GetRawPersistantStateJson(string filePath)

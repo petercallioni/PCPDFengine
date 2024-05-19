@@ -4,5 +4,6 @@
     {
         public static string STATE_JSON = "State.json";
         public static string FONTS_FOLDER = "Fonts";
+        public static string IMAGES_FOLDER = "Images";
     }
 }

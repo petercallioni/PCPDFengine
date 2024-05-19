@@ -156,5 +156,43 @@ namespace PCPDFengineCore.Persistence.Tests
 
             Assert.IsTrue(masterController.PersistenceController.State.EmbeddedFonts.Count == 0);
         }
+
+        [TestMethod()]
+        public void AddImageToState()
+        {
+            MasterController masterController = new MasterController();
+
+            masterController.ImageController.AddImageToState(TestResources.InsertFiles.TEST_JPEG);
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
+
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
+
+            byte[] testImage = masterController.ImageController.GetImage(new FileInfo(TestResources.InsertFiles.TEST_JPEG).Name);
+
+            PdfDocumentBuilder builder = new PdfDocumentBuilder();
+            PdfPageBuilder page = builder.AddPage(1, 1);
+
+            page.AddJpeg(testImage, new UglyToad.PdfPig.Core.PdfRectangle(1, 1, 1, 1));
+            Assert.IsTrue(true); // At this point the image loaded correctly.
+        }
+
+
+        [TestMethod()]
+        public void RemoveImageFromState()
+        {
+            MasterController masterController = new MasterController();
+
+            masterController.ImageController.AddImageToState(TestResources.InsertFiles.TEST_JPEG);
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
+
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
+
+            Assert.IsTrue(masterController.PersistenceController.State.EmbeddedImages.Count == 1);
+
+            masterController.ImageController.RemoveImageFromState(new FileInfo(TestResources.InsertFiles.TEST_JPEG).Name);
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
+
+            Assert.IsTrue(masterController.PersistenceController.State.EmbeddedImages.Count == 0);
+        }
     }
 }

@@ -15,12 +15,12 @@
         internal static class InsertFiles
         {
             internal static string DIRECTORY = Path.Combine(RESOURCES_DIRECTORY, "TestInsertFiles");
-            internal static string TestPdf = Path.Combine(DIRECTORY, "TestPDF.pdf");
-            internal static string TestPng = Path.Combine(DIRECTORY, "TestPNG.png");
-            internal static string TestJpeg = Path.Combine(DIRECTORY, "TestJPEG.jpg");
-            internal static string TestBmp = Path.Combine(DIRECTORY, "TestBMP.bmp");
-            internal static string TestGif = Path.Combine(DIRECTORY, "TestGIF.gif");
-            internal static string TestTiff = Path.Combine(DIRECTORY, "TestTIFF.tif");
+            internal static string TEST_PDF = Path.Combine(DIRECTORY, "TestPDF.pdf");
+            internal static string TEST_PNG = Path.Combine(DIRECTORY, "TestPNG.png");
+            internal static string TEST_JPEG = Path.Combine(DIRECTORY, "TestJPEG.jpg");
+            internal static string TEST_BMP = Path.Combine(DIRECTORY, "TestBMP.bmp");
+            internal static string TEST_GIF = Path.Combine(DIRECTORY, "TestGIF.gif");
+            internal static string TEST_TIFF = Path.Combine(DIRECTORY, "TestTIFF.tif");
         }
     }
 }

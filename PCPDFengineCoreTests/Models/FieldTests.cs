@@ -75,38 +75,38 @@ namespace PCPDFengineCore.Models.Tests
         [TestMethod()]
         public void FieldTestInsertPdf()
         {
-            Field field = new Field(Enums.FieldType.INSERT_PDF, "N/A", TestResources.InsertFiles.TestPdf);
+            Field field = new Field(Enums.FieldType.INSERT_PDF, "N/A", TestResources.InsertFiles.TEST_PDF);
             Assert.AreEqual(true, field.ConvertToActualType<FileInfo>().Exists);
         }
 
         [TestMethod()]
         public void FieldTestInsertImageBmp()
         {
-            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TestBmp);
+            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TEST_BMP);
             Assert.AreEqual(true, field.ConvertToActualType<FileInfo>().Exists);
         }
         [TestMethod()]
         public void FieldTestInsertImageGif()
         {
-            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TestGif);
+            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TEST_GIF);
             Assert.AreEqual(true, field.ConvertToActualType<FileInfo>().Exists);
         }
         [TestMethod()]
         public void FieldTestInsertImageJpeg()
         {
-            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TestJpeg);
+            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TEST_JPEG);
             Assert.AreEqual(true, field.ConvertToActualType<FileInfo>().Exists);
         }
         [TestMethod()]
         public void FieldTestInsertImagePng()
         {
-            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TestPng);
+            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TEST_PNG);
             Assert.AreEqual(true, field.ConvertToActualType<FileInfo>().Exists);
         }
         [TestMethod()]
         public void FieldTestInsertImageTiff()
         {
-            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TestTiff);
+            Field field = new Field(Enums.FieldType.INSERT_IMAGE, "N/A", TestResources.InsertFiles.TEST_TIFF);
             Assert.AreEqual(true, field.ConvertToActualType<FileInfo>().Exists);
         }
     }
