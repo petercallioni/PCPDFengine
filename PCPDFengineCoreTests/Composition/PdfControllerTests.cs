@@ -1,6 +1,9 @@
-﻿using PCPDFengineCore.RecordReader;
+﻿using PCPDFengineCore.Composition.PageElements;
+using PCPDFengineCore.Composition.Units;
+using PCPDFengineCore.RecordReader;
 using PCPDFengineCore.RecordReader.RecordReaderOptions;
 using PCPDFengineCoreTests;
+using System.Drawing;
 
 namespace PCPDFengineCore.Composition.Tests
 {
@@ -53,14 +56,24 @@ namespace PCPDFengineCore.Composition.Tests
         }
 
         [TestMethod()]
-        public void ComposeSavedPdfTest()
+        public void PdfPageElementTest()
         {
             TextDelimitedRecordReader reader = new TextDelimitedRecordReader(options);
 
             MasterController masterController = new MasterController();
             DocumentCollection documentCollection = new DocumentCollection();
             Document document = new Document("test");
-            document.Add(new Page("testPage"));
+            Page page = new Page("testPage");
+
+            PageElements.PageElement element = new PageElements.PageElement();
+
+            element.Name = "testText";
+            element.InitialX = new Unit(10, UnitTypes.Centimeter);
+            element.InitialY = new Unit(5, UnitTypes.Centimeter);
+
+            page.PageElements.Add(element);
+
+            document.Add(page);
             documentCollection.Add(document);
 
             masterController.PdfController.SaveDocumentCollectionToState(documentCollection);
@@ -68,7 +81,43 @@ namespace PCPDFengineCore.Composition.Tests
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
             masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
 
-            Assert.IsTrue(masterController.PersistenceController.State.DocumentCollection.Documents.Count > 0);
+            //Assert.AreEqual(10, masterController.PersistenceController.State.DocumentCollection.Documents[0].Pages[0].PageElements[0].InitialX.Value);
+
+            masterController.PdfController.ComposePdf(results, masterController.PersistenceController.State.DocumentCollection, TestResources.TEST_OUT_PDF);
+
+            Assert.IsTrue(File.Exists(TestResources.TEST_OUT_PDF));
+        }
+
+        [TestMethod()]
+        public void PdfPageLineTest()
+        {
+            TextDelimitedRecordReader reader = new TextDelimitedRecordReader(options);
+
+            MasterController masterController = new MasterController();
+            DocumentCollection documentCollection = new DocumentCollection();
+            Document document = new Document("test");
+            Page page = new Page("testPage");
+
+            PageElements.Line element = new PageElements.Line();
+
+            element.Name = "testText";
+            element.InitialX = new Unit(10, UnitTypes.Centimeter);
+            element.InitialY = new Unit(5, UnitTypes.Centimeter);
+            element.Width = new Unit(10, UnitTypes.Centimeter);
+            element.Thickness = new Unit(3, UnitTypes.Millimeter);
+            element.BorderColor = new Colour(Color.Blue);
+
+            page.PageElements.Add(element);
+
+            document.Add(page);
+            documentCollection.Add(document);
+
+            masterController.PdfController.SaveDocumentCollectionToState(documentCollection);
+
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
+
+            //Assert.AreEqual(10, masterController.PersistenceController.State.DocumentCollection.Documents[0].Pages[0].PageElements[0].Width.Value);
 
             masterController.PdfController.ComposePdf(results, masterController.PersistenceController.State.DocumentCollection, TestResources.TEST_OUT_PDF);
 

@@ -67,6 +67,7 @@ namespace PCPDFengineCore.Persistence
         {
             serializeOptions = new JsonSerializerOptions();
             serializeOptions.WriteIndented = indent;
+            serializeOptions.Converters.Add(new PageElementConverter());
             serializeOptions.Converters.Add(new RecordReaderInterfaceConverter());
             state = new PersistanceState();
         }
