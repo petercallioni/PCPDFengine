@@ -19,10 +19,10 @@ namespace PCPDFengineCore.Composition.Units
             Value = value;
         }
 
-        public Unit ConvertTo(UnitTypes desiredType)
+        public double ValueAs(UnitTypes desiredType)
         {
             if (Type == desiredType)
-                return this;
+                return Value;
 
             double newValue = Value;
 
@@ -46,19 +46,19 @@ namespace PCPDFengineCore.Composition.Units
             switch (desiredType)
             {
                 case UnitTypes.Centimeter:
-                    newValue = Value / 10;
+                    newValue = newValue / 10;
                     break;
 
                 case UnitTypes.Inch:
-                    newValue = Value / 25.4;
+                    newValue = newValue / 25.4;
                     break;
 
                 case UnitTypes.Point:
-                    newValue = (Value / 25.4) * 72;
+                    newValue = (newValue / 25.4) * 72;
                     break;
             }
 
-            return new Unit(newValue, desiredType);
+            return newValue;
         }
 
         public override string? ToString()
