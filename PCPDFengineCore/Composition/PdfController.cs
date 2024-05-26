@@ -1,4 +1,5 @@
-﻿using PCPDFengineCore.RecordReader;
+﻿using PCPDFengineCore.Persistence;
+using PCPDFengineCore.RecordReader;
 using UglyToad.PdfPig.Writer;
 
 namespace PCPDFengineCore.Composition
@@ -12,6 +13,22 @@ namespace PCPDFengineCore.Composition
             pdfComposer = new PdfComposer();
         }
 
+        private PersistenceController? persistenceController;
+        private PersistenceController PersistenceController
+        {
+            get
+            {
+                if (persistenceController == null)
+                {
+                    throw new NullReferenceException("PersistenceController called before it is set.");
+                }
+                return persistenceController;
+            }
+        }
+        public void SetPersistenceController(PersistenceController persistenceController)
+        {
+            this.persistenceController = persistenceController;
+        }
 
         public void ComposePdf(List<Record> records, DocumentCollection documentCollection, string outputFilename)
         {
@@ -23,6 +40,11 @@ namespace PCPDFengineCore.Composition
             byte[] documentBytes = builder.Build();
 
             File.WriteAllBytes(outputFilename, documentBytes);
+        }
+
+        public void SaveDocumentCollectionToState(DocumentCollection documentCollection)
+        {
+            PersistenceController.State.DocumentCollection = documentCollection;
         }
 
         private PdfDocumentBuilder CompseCycleOne(List<Record> records, DocumentCollection documentCollection, PdfDocumentBuilder builder)

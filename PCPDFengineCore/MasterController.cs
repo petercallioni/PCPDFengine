@@ -1,4 +1,5 @@
-﻿using PCPDFengineCore.Fonts;
+﻿using PCPDFengineCore.Composition;
+using PCPDFengineCore.Fonts;
 using PCPDFengineCore.Images;
 using PCPDFengineCore.Persistence;
 
@@ -9,6 +10,7 @@ namespace PCPDFengineCore
         PersistenceController persistenceController = new PersistenceController();
         FontController fontController = new FontController();
         ImageController imageController = new ImageController();
+        PdfController pdfController = new PdfController();
 
         public MasterController()
         {
@@ -17,12 +19,14 @@ namespace PCPDFengineCore
 
             fontController.SetPersistenceController(persistenceController);
             imageController.SetPersistenceController(persistenceController);
+            pdfController.SetPersistenceController(persistenceController);
 
             fontController.LoadInstalledTtfFonts();
         }
 
         public FontController FontController { get => fontController; }
         public PersistenceController PersistenceController { get => persistenceController; }
-        public ImageController ImageController { get => imageController; set => imageController = value; }
+        public ImageController ImageController { get => imageController; }
+        public PdfController PdfController { get => pdfController; }
     }
 }

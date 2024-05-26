@@ -1,4 +1,5 @@
-﻿using PCPDFengineCore.Fonts;
+﻿using PCPDFengineCore.Composition;
+using PCPDFengineCore.Fonts;
 using PCPDFengineCore.Images;
 using PCPDFengineCore.Interfaces;
 
@@ -13,12 +14,15 @@ namespace PCPDFengineCore.Persistence
         private IRecordReader? recordReader;
         private List<FontInfo> embeddedFonts;
         private List<ImageInfo> embeddedImages;
+        private DocumentCollection documentCollection;
+
         private bool embedFonts;
 
         public PersistanceState()
         {
             fileInformation = null;
             recordReader = null;
+            documentCollection = new DocumentCollection();
             embeddedFonts = new List<FontInfo>();
             embeddedImages = new List<ImageInfo>();
             embedFonts = true;
@@ -30,5 +34,6 @@ namespace PCPDFengineCore.Persistence
         public List<FontInfo> EmbeddedFonts { get => embeddedFonts; set => embeddedFonts = value; }
         public List<ImageInfo> EmbeddedImages { get => embeddedImages; set => embeddedImages = value; }
         public bool EmbedFonts { get => embedFonts; set => embedFonts = value; }
+        public DocumentCollection DocumentCollection { get => documentCollection; set => documentCollection = value; }
     }
 }

@@ -4,19 +4,23 @@ namespace PCPDFengineCore.Composition.Units
 {
     public class Unit
     {
-        public UnitTypes Type;
-        public double Value;
+        public UnitTypes Type { get => type; set => type = value; }
+        public double Value { get => value; set => this.value = value; }
 
+        private UnitTypes type;
+        private double value;
+
+        public Unit() { }
         public Unit(double value, UnitTypes type)
         {
-            Type = type;
-            Value = value;
+            this.type = type;
+            this.value = value;
         }
 
         public Unit(double value)
         {
-            Type = UnitTypes.Millimeter;
-            Value = value;
+            this.type = UnitTypes.Millimeter;
+            this.value = value;
         }
 
         public double ValueAs(UnitTypes desiredType)

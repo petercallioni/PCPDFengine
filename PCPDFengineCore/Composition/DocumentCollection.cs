@@ -9,7 +9,7 @@
             this.documents = new List<Document>();
         }
 
-        internal List<Document> Documents { get => documents; }
+        public List<Document> Documents { get => documents; set => documents = value; }
 
         public void Add(Document document)
         {

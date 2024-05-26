@@ -8,6 +8,10 @@ namespace PCPDFengineCore.Composition
         private Unit width;
         private Unit height;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public Page() { }      // Required for json serialisation
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         public Page(string name)
         {
             this.name = name;
