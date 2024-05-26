@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PCPDFengineCore.Persistence
+namespace PCPDFengineCore.Persistence.JsonConverters
 {
     public class PageElementConverter : JsonConverter<PageElement>
     {
@@ -29,7 +29,7 @@ namespace PCPDFengineCore.Persistence
             }
             catch
             {
-                throw new NotImplementedException("Data reader object missing ClassTypeString");
+                throw new NotImplementedException("Page Element object missing ClassTypeString");
             }
         }
 

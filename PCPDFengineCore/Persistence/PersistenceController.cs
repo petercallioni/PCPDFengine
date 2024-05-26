@@ -1,6 +1,7 @@
 ﻿using PCPDFengineCore.Extensions;
 using PCPDFengineCore.Fonts;
 using PCPDFengineCore.Images;
+using PCPDFengineCore.Persistence.JsonConverters;
 using System.IO.Compression;
 using System.Text.Json;
 

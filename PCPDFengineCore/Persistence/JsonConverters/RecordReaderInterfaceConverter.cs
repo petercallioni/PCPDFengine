@@ -3,7 +3,7 @@ using PCPDFengineCore.RecordReader;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PCPDFengineCore.Persistence
+namespace PCPDFengineCore.Persistence.JsonConverters
 {
     public class RecordReaderInterfaceConverter : JsonConverter<IRecordReader>
     {

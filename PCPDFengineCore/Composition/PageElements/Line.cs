@@ -17,8 +17,6 @@ namespace PCPDFengineCore.Composition.PageElements
             height = new Unit(0, UnitTypes.Centimeter);
             thickness = new Unit(0, UnitTypes.Centimeter);
             borderColor = new Colour(Color.Black);
-
-            classTypeString = this.GetType().ToString();
         }
 
         public Unit Thickness { get => thickness; set => thickness = value; }
