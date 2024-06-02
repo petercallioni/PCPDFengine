@@ -58,5 +58,51 @@
             Unit unit = new Unit(100, UnitTypes.Millimeter);
             Assert.AreEqual(100, unit.ValueAs(UnitTypes.Millimeter));
         }
+
+        [TestMethod()]
+        public void UnitOperatorJustPlusTest()
+        {
+            Unit a = new Unit(10, UnitTypes.Millimeter);
+            Assert.AreEqual(10, +a.ValueAs(UnitTypes.Millimeter));
+        }
+
+        [TestMethod()]
+        public void UnitOperatorJustNegativeTest()
+        {
+            Unit a = new Unit(10, UnitTypes.Millimeter);
+            Assert.AreEqual(-10, -a.ValueAs(UnitTypes.Millimeter));
+        }
+
+        [TestMethod()]
+        public void UnitOperatorPlusTest()
+        {
+            Unit a = new Unit(10, UnitTypes.Millimeter);
+            Unit b = new Unit(20, UnitTypes.Millimeter);
+            Assert.AreEqual(30, (a + b).ValueAs(UnitTypes.Millimeter));
+        }
+
+        [TestMethod()]
+        public void UnitOperatorMinusTest()
+        {
+            Unit a = new Unit(50, UnitTypes.Millimeter);
+            Unit b = new Unit(20, UnitTypes.Millimeter);
+            Assert.AreEqual(30, (a - b).ValueAs(UnitTypes.Millimeter));
+        }
+
+        [TestMethod()]
+        public void UnitOperatorTimesTest()
+        {
+            Unit a = new Unit(50, UnitTypes.Millimeter);
+            Unit b = new Unit(2, UnitTypes.Millimeter);
+            Assert.AreEqual(100, (a * b).ValueAs(UnitTypes.Millimeter));
+        }
+
+        [TestMethod()]
+        public void UnitOperatorDivideTest()
+        {
+            Unit a = new Unit(100, UnitTypes.Millimeter);
+            Unit b = new Unit(2, UnitTypes.Millimeter);
+            Assert.AreEqual(50, (a / b).ValueAs(UnitTypes.Millimeter));
+        }
     }
 }

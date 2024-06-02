@@ -22,22 +22,36 @@ namespace PCPDFengineCore.Composition
                         element.InitialX.ValueAs(Units.UnitTypes.Point),
                         page.Height.ValueAs(Units.UnitTypes.Point) - element.InitialY.ValueAs(Units.UnitTypes.Point)); // PDF expects from bottom left; values in from top left
 
-                    if (element is IRect)
+                    if (element is IHas2Dimensions)
                     {
-                        Line line = (Line)element;
-                        PdfPoint pdfPointTo = new PdfPoint(pdfPointOrigin.X + line.Width.ValueAs(Units.UnitTypes.Point), pdfPointOrigin.Y + line.Height.ValueAs(Units.UnitTypes.Point));
+                        if (element is IHasLines)
+                        {
+                            foreach (PageElements.Line line in ((IHasLines)element).Lines)
+                            {
+                                pdfPointOrigin = new PdfPoint(
+                                    line.InitialX.ValueAs(Units.UnitTypes.Point),
+                                    page.Height.ValueAs(Units.UnitTypes.Point) - line.InitialY.ValueAs(Units.UnitTypes.Point)); // PDF expects from bottom left; values in from top left
 
-                        currentPage.SetStrokeColor(line.BorderColor.R, line.BorderColor.G, line.BorderColor.B);
-                        currentPage.DrawLine(
-                            pdfPointOrigin,
-                            pdfPointTo,
-                            (decimal)line.Thickness.ValueAs(Units.UnitTypes.Point)
-                        );
+                                DrawLine(currentPage, line, pdfPointOrigin);
+                            }
+                        }
                     }
                 }
             }
 
             return builder;
+        }
+
+        internal void DrawLine(PdfPageBuilder page, Line line, PdfPoint origin)
+        {
+            PdfPoint pdfPointTo = new PdfPoint(origin.X + line.Width.ValueAs(Units.UnitTypes.Point), origin.Y + -line.Height.ValueAs(Units.UnitTypes.Point));
+
+            page.SetStrokeColor(line.BorderColor.R, line.BorderColor.G, line.BorderColor.B);
+            page.DrawLine(
+                origin,
+                pdfPointTo,
+                (decimal)line.Thickness.ValueAs(Units.UnitTypes.Point)
+            );
         }
     }
 }

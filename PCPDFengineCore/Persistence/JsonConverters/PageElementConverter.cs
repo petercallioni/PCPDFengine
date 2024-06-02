@@ -22,6 +22,10 @@ namespace PCPDFengineCore.Persistence.JsonConverters
                 {
                     return JsonSerializer.Deserialize<PageElement>(jsonObject.GetRawText(), newOptions)!;
                 }
+                else if (type.Equals(typeof(Polygon).FullName))
+                {
+                    return JsonSerializer.Deserialize<Polygon>(jsonObject.GetRawText(), newOptions)!;
+                }
                 else
                 {
                     throw new NotImplementedException($"Page Element {type} not implemented in PageElementConverter");

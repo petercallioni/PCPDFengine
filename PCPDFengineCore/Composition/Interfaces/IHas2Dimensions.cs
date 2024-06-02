@@ -2,7 +2,7 @@
 
 namespace PCPDFengineCore.Composition.Interfaces
 {
-    public interface IRect : IPositionable
+    public interface IHas2Dimensions : IPositionable
     {
         public Unit Width { get; set; }
         public Unit Height { get; set; }

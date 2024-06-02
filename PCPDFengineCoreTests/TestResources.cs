@@ -4,7 +4,14 @@
     {
         internal static string RESOURCES_DIRECTORY = Path.GetFullPath("./TestResources/");
         internal static string TEST_SAVE_FILE = Path.Combine(RESOURCES_DIRECTORY, "TEST.pcpdf");
-        internal static string TEST_OUT_PDF = Path.Combine(RESOURCES_DIRECTORY, "TEST.PDF");
+
+        internal static class TestPDFs
+        {
+            internal static string DIRECTORY = Path.Combine(RESOURCES_DIRECTORY, "TestPDFs");
+            internal static string TEST_BASE_PDF = Path.Combine(DIRECTORY, "TEST.PDF");
+            internal static string TEST_LINE_PDF = Path.Combine(DIRECTORY, "TEST_LINE.PDF");
+            internal static string TEST_SQUARE_PDF = Path.Combine(DIRECTORY, "TEST_SQUARE.PDF");
+        }
 
         internal static class DataFiles
         {

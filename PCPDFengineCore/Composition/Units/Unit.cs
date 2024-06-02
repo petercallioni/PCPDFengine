@@ -23,6 +23,22 @@ namespace PCPDFengineCore.Composition.Units
             this.value = value;
         }
 
+        public Unit(Unit unit)
+        {
+            this.type = unit.type;
+            this.value = unit.value;
+        }
+
+        /// <summary>
+        /// Provides a easy way to return the value in a predetermined format
+        /// for comparisons.
+        /// </summary>
+        /// <returns></returns>
+        public double ValueIndefinite()
+        {
+            return ValueAs(UnitTypes.Point);
+        }
+
         public double ValueAs(UnitTypes desiredType)
         {
             if (Type == desiredType)
@@ -65,9 +81,59 @@ namespace PCPDFengineCore.Composition.Units
             return newValue;
         }
 
+        public Unit Negative()
+        {
+            Unit negative = new Unit(this);
+            negative.value = -value;
+            return negative;
+        }
+
         public override string? ToString()
         {
             return this.DumpObject();
+        }
+
+        public static Unit operator +(Unit a) => a;
+        public static Unit operator -(Unit a) => new Unit(a.Negative());
+
+        public static Unit operator +(Unit a, Unit b)
+        {
+            UnitTypes returnType = a.Type;
+            UnitTypes returnType2 = b.Type;
+
+            if (returnType != returnType2)
+            {
+                throw new ArgumentException($"Cannot add {returnType} and {returnType2} directly. Use ValueAs(UnitTypes) on one of them.");
+            }
+
+            return new Unit(a.ValueAs(returnType) + b.ValueAs(returnType), returnType);
+        }
+
+
+        public static Unit operator -(Unit a, Unit b)
+        {
+            UnitTypes returnType = a.Type;
+
+            return new Unit(a.ValueAs(returnType) + -b.ValueAs(returnType), returnType);
+        }
+
+        public static Unit operator *(Unit a, Unit b)
+        {
+            UnitTypes returnType = a.Type;
+
+            return new Unit(a.ValueAs(returnType) * b.ValueAs(returnType), returnType);
+        }
+
+        public static Unit operator /(Unit a, Unit b)
+        {
+            if (b.value == 0 || a.value == 0)
+            {
+                throw new DivideByZeroException();
+            }
+
+            UnitTypes returnType = a.Type;
+
+            return new Unit(a.ValueAs(returnType) / b.ValueAs(returnType), returnType);
         }
     }
 }
