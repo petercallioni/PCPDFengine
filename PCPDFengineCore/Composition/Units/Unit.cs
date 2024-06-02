@@ -135,5 +135,24 @@ namespace PCPDFengineCore.Composition.Units
 
             return new Unit(a.ValueAs(returnType) / b.ValueAs(returnType), returnType);
         }
+
+        public static Unit operator *(Unit a, double b)
+        {
+            UnitTypes returnType = a.Type;
+
+            return new Unit(a.ValueAs(returnType) * b, returnType);
+        }
+
+        public static Unit operator /(Unit a, double b)
+        {
+            if (b == 0 || a.value == 0)
+            {
+                throw new DivideByZeroException();
+            }
+
+            UnitTypes returnType = a.Type;
+
+            return new Unit(a.ValueAs(returnType) / b, returnType);
+        }
     }
 }

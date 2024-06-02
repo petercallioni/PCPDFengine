@@ -153,8 +153,8 @@ namespace PCPDFengineCore.Composition.Tests
             element.InitialX = new Unit(5, UnitTypes.Centimeter);
             element.InitialY = new Unit(10, UnitTypes.Centimeter);
             element.Width = new Unit(5, UnitTypes.Centimeter);
-            element.Height = new Unit(5, UnitTypes.Centimeter);
-            element.Thickness = new Unit(3, UnitTypes.Millimeter);
+            element.Height = new Unit(10, UnitTypes.Centimeter);
+            element.Thickness = new Unit(.3, UnitTypes.Centimeter);
             element.BorderColor = new Colour(Color.Blue);
             element.InitialiseRectangle();
 
@@ -167,8 +167,6 @@ namespace PCPDFengineCore.Composition.Tests
 
             masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
             masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
-
-            //Assert.AreEqual(10, masterController.PersistenceController.State.DocumentCollection.Documents[0].Pages[0].PageElements[0].Width.Value);
 
             masterController.PdfController.ComposePdf(results, masterController.PersistenceController.State.DocumentCollection, TestResources.TestPDFs.TEST_SQUARE_PDF);
 

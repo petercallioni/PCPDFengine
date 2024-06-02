@@ -63,24 +63,25 @@ namespace PCPDFengineCore.Composition.PageElements
 
         public void InitialiseRectangle()
         {
-            Line currentLine = AddLine(InitialX, InitialY, Width, new Unit(0, height.Type));
-            currentLine.CurrentX = currentLine.CurrentX + Width;
-            currentLine.BorderColor = new Colour(Color.Blue);
+            Unit thicknessModifier = Thickness.Value != 0 ? Thickness / 2 : new Unit(0, Thickness.Type);
 
-            // Right
-            currentLine = AddLine(currentLine.CurrentX, currentLine.CurrentY, new Unit(0, width.Type), Height);
-            currentLine.CurrentY = currentLine.CurrentY + Height;
-            currentLine.BorderColor = new Colour(Color.Red);
+            //Left
+            Line line3 = AddLine(InitialX + thicknessModifier, InitialY, new Unit(0, width.Type), Height);
+            line3.BorderColor = new Colour(Color.Green);
 
-            // Bottom
-            currentLine = AddLine(currentLine.CurrentX, currentLine.CurrentY, -Width, new Unit());
-            currentLine.CurrentX = currentLine.CurrentX - Width;
-            currentLine.BorderColor = new Colour(Color.Green);
+            //Right
+            Line line4 = AddLine(InitialX + Width - thicknessModifier, InitialY, new Unit(0, width.Type), Height);
+            line4.BorderColor = new Colour(Color.Yellow);
 
-            //// Left
-            currentLine = AddLine(currentLine.CurrentX, currentLine.CurrentY, new Unit(), -Height);
-            currentLine.BorderColor = new Colour(Color.Yellow);
+            // Top
+            Line line1 = AddLine(InitialX, InitialY + thicknessModifier, Width, new Unit(0, height.Type));
+            line1.BorderColor = new Colour(Color.Blue);
 
+            //Bottom
+            Line line2 = AddLine(InitialX, InitialY + Height - thicknessModifier, Width, new Unit(0, height.Type));
+            line2.BorderColor = new Colour(Color.Red);
+
+            // Set Position to lower right corner.
             CurrentY = InitialY + Height;
             CurrentX = InitialX + Width;
         }
