@@ -11,6 +11,7 @@
             internal static string TEST_BASE_PDF = Path.Combine(DIRECTORY, "TEST.PDF");
             internal static string TEST_LINE_PDF = Path.Combine(DIRECTORY, "TEST_LINE.PDF");
             internal static string TEST_SQUARE_PDF = Path.Combine(DIRECTORY, "TEST_SQUARE.PDF");
+            internal static string TEST_TRIANGLE_PDF = Path.Combine(DIRECTORY, "TEST_TRIANGLE.PDF");
         }
 
         internal static class DataFiles

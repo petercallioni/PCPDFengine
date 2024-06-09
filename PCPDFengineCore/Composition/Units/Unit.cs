@@ -154,5 +154,10 @@ namespace PCPDFengineCore.Composition.Units
 
             return new Unit(a.ValueAs(returnType) / b, returnType);
         }
+
+        public void AddUnit(Unit toAdd)
+        {
+            this.Value = this.Value + toAdd.ValueAs(this.Type);
+        }
     }
 }

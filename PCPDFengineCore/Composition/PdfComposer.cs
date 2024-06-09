@@ -1,5 +1,6 @@
 ﻿using PCPDFengineCore.Composition.Interfaces;
 using PCPDFengineCore.Composition.PageElements;
+using PCPDFengineCore.Composition.Units;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Writer;
 
@@ -26,13 +27,37 @@ namespace PCPDFengineCore.Composition
                     {
                         if (element is IHasLines)
                         {
-                            foreach (PageElements.Line line in ((IHasLines)element).Lines)
+                            if (((IHasLines)element).Lines.Count > 1)
                             {
-                                pdfPointOrigin = new PdfPoint(
-                                    line.InitialX.ValueAs(Units.UnitTypes.Point),
-                                    page.Height.ValueAs(Units.UnitTypes.Point) - line.InitialY.ValueAs(Units.UnitTypes.Point)); // PDF expects from bottom left; values in from top left
+                                DrawPolygon(currentPage, page, (Polygon)element);
+                            }
+                            else
+                            {
+                                foreach (PageElements.Line line in ((IHasLines)element).Lines)
+                                {
+                                    LineWithEndings calculatedLine = line.ApplyLineEndings(line.LineEnding, line);
 
-                                DrawLine(currentPage, line, pdfPointOrigin);
+                                    if (calculatedLine.StartEndMiter != null)
+                                    {
+                                        DrawTriangle(currentPage, calculatedLine.StartEndMiter);
+                                    }
+
+                                    if (calculatedLine.EndEndMiter != null)
+                                    {
+                                        DrawTriangle(currentPage, calculatedLine.EndEndMiter);
+                                    }
+
+                                    if (calculatedLine.StartEndCurve != null)
+                                    {
+
+                                    }
+
+                                    if (calculatedLine.EndEndCurve != null)
+                                    {
+
+                                    }
+                                    DrawLine(currentPage, page, calculatedLine);
+                                }
                             }
                         }
                     }
@@ -42,16 +67,88 @@ namespace PCPDFengineCore.Composition
             return builder;
         }
 
-        internal void DrawLine(PdfPageBuilder page, Line line, PdfPoint origin)
+        internal void DrawLine(PdfPageBuilder pageBuilder, Page page, LineWithEndings line)
         {
-            PdfPoint pdfPointTo = new PdfPoint(origin.X + line.Width.ValueAs(Units.UnitTypes.Point), origin.Y + -line.Height.ValueAs(Units.UnitTypes.Point));
+            //(Unit startX, Unit startY, Unit endX, Unit endY) = CaluclateLineWithThickness(page, line.Line);
 
-            page.SetStrokeColor(line.BorderColor.R, line.BorderColor.G, line.BorderColor.B);
-            page.DrawLine(
-                origin,
+            PdfPoint pdfPointOrigin = new PdfPoint(
+                   line.Line.CurrentX.ValueAs(Units.UnitTypes.Point),
+                   page.Height.ValueAs(Units.UnitTypes.Point) - line.Line.CurrentY.ValueAs(Units.UnitTypes.Point)); // PDF expects from bottom left; values in from top left
+
+            PdfPoint pdfPointTo = new PdfPoint(line.Line.EndX().ValueAs(UnitTypes.Point), page.Height.ValueAs(Units.UnitTypes.Point) - line.Line.EndY().ValueAs(UnitTypes.Point));
+
+            pageBuilder.SetStrokeColor(line.Line.BorderColor.R, line.Line.BorderColor.G, line.Line.BorderColor.B);
+
+            pageBuilder.DrawLine(
+                pdfPointOrigin,
                 pdfPointTo,
-                (decimal)line.Thickness.ValueAs(Units.UnitTypes.Point)
+                (decimal)line.Line.Thickness.ValueAs(Units.UnitTypes.Point)
             );
+        }
+
+        internal void DrawPolygon(PdfPageBuilder pageBuilder, Page page, Polygon polygon)
+        {
+            List<Line> calcLines = CalculatePolygonLineWithThickness(polygon);
+
+            foreach (PageElements.Line line in calcLines)
+            {
+                PdfPoint pdfPointOrigin = new PdfPoint(
+                       line.CurrentX.ValueAs(Units.UnitTypes.Point),
+                       page.Height.ValueAs(Units.UnitTypes.Point) - line.CurrentY.ValueAs(Units.UnitTypes.Point)); // PDF expects from bottom left; values in from top left
+
+                PdfPoint pdfPointTo = new PdfPoint(line.EndX().ValueAs(UnitTypes.Point), page.Height.ValueAs(Units.UnitTypes.Point) - line.EndY().ValueAs(UnitTypes.Point));
+                pageBuilder.SetStrokeColor(line.BorderColor.R, line.BorderColor.G, line.BorderColor.B);
+                pageBuilder.DrawLine(
+                pdfPointOrigin,
+                pdfPointTo,
+                    (decimal)line.Thickness.ValueAs(Units.UnitTypes.Point)
+                );
+            }
+        }
+
+        internal List<Line> CalculatePolygonLineWithThickness(Polygon polygon)
+        {
+            List<Line> polygonLines = new List<Line>();
+            foreach (Line line in polygon.Lines)
+            {
+                // find angle of line
+                Unit dx = line.EndX() - line.CurrentX;
+                Unit dy = line.EndY() - line.CurrentY;
+
+                Unit centreX = (polygon.InitialX + (polygon.Width / 2));
+                Unit centreY = (polygon.InitialY + (polygon.Height / 2));
+
+                double angle = Math.Atan2(dy.ValueAs(dx.Type), dx.Value);
+
+                double offsetX = Math.Sin(angle - Math.PI) * (line.Thickness.ValueAs(dx.Type) / 2);
+                double offsetY = Math.Cos(angle) * (line.Thickness.ValueAs(dy.Type) / 2);
+
+                if (line.InitialX.ValueIndefinite() < centreX.ValueIndefinite())
+                {
+                    offsetX = -offsetX;
+                }
+
+                if (line.InitialY.ValueIndefinite() > centreY.ValueIndefinite())
+                {
+                    offsetY = -offsetY;
+                }
+
+                Line polygonLine = new Line(line);
+                polygonLine.InitialX.AddUnit(new Unit(offsetX, dx.Type));
+                polygonLine.InitialY.AddUnit(new Unit(offsetY, dy.Type));
+                //polygonLine.Width.AddUnit(new Unit(offsetX, dx.Type));
+                //polygonLine.Height.AddUnit(new Unit(offsetY, dy.Type));
+
+                polygonLines.Add(polygonLine);
+            }
+
+            // return the new start/end points
+            return polygonLines;
+        }
+
+        internal void DrawTriangle(PdfPageBuilder page, Triangle triangle)
+        {
+
         }
     }
 }

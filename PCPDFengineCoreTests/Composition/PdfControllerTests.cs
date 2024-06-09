@@ -106,7 +106,7 @@ namespace PCPDFengineCore.Composition.Tests
             element.InitialY = new Unit(5, UnitTypes.Centimeter);
 
             element.Width = new Unit(10, UnitTypes.Centimeter);
-            element.Thickness = new Unit(3, UnitTypes.Millimeter);
+            element.Thickness = new Unit(.3, UnitTypes.Centimeter);
             element.BorderColor = new Colour(Color.Blue);
 
             page.PageElements.Add(element);
@@ -117,7 +117,7 @@ namespace PCPDFengineCore.Composition.Tests
             element2.InitialY = new Unit(5, UnitTypes.Centimeter);
 
             element2.Height = new Unit(2, UnitTypes.Centimeter);
-            element2.Thickness = new Unit(3, UnitTypes.Millimeter);
+            element2.Thickness = new Unit(.3, UnitTypes.Centimeter);
             element2.BorderColor = new Colour(Color.Blue);
 
             page.PageElements.Add(element2);
@@ -171,6 +171,42 @@ namespace PCPDFengineCore.Composition.Tests
             masterController.PdfController.ComposePdf(results, masterController.PersistenceController.State.DocumentCollection, TestResources.TestPDFs.TEST_SQUARE_PDF);
 
             Assert.IsTrue(File.Exists(TestResources.TestPDFs.TEST_SQUARE_PDF));
+        }
+
+        [TestMethod()]
+        public void PdfPageTriangleTest()
+        {
+            TextDelimitedRecordReader reader = new TextDelimitedRecordReader(options);
+
+            MasterController masterController = new MasterController();
+            DocumentCollection documentCollection = new DocumentCollection();
+            Document document = new Document("test");
+            Page page = new Page("testPage");
+
+            PageElements.Polygon element = new PageElements.Polygon();
+
+            element.Name = "testText";
+            element.InitialX = new Unit(5, UnitTypes.Centimeter);
+            element.InitialY = new Unit(10, UnitTypes.Centimeter);
+            element.Width = new Unit(10, UnitTypes.Centimeter);
+            element.Height = new Unit(10, UnitTypes.Centimeter);
+            element.Thickness = new Unit(.3, UnitTypes.Centimeter);
+            element.BorderColor = new Colour(Color.Blue);
+            element.InitialiseEquilateralTriangle();
+
+            page.PageElements.Add(element);
+
+            document.Add(page);
+            documentCollection.Add(document);
+
+            masterController.PdfController.SaveDocumentCollectionToState(documentCollection);
+
+            masterController.PersistenceController.SaveState(TestResources.TEST_SAVE_FILE);
+            masterController.PersistenceController.LoadState(TestResources.TEST_SAVE_FILE);
+
+            masterController.PdfController.ComposePdf(results, masterController.PersistenceController.State.DocumentCollection, TestResources.TestPDFs.TEST_TRIANGLE_PDF);
+
+            Assert.IsTrue(File.Exists(TestResources.TestPDFs.TEST_TRIANGLE_PDF));
         }
     }
 }

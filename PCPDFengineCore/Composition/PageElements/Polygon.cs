@@ -6,7 +6,8 @@ namespace PCPDFengineCore.Composition.PageElements
 {
     public enum BasePolygonTypes
     {
-        RECTANGLE
+        RECTANGLE,
+        TRIANGLE
     }
 
     public class Polygon : PageElement, IHas2Dimensions, IHasBorder, IHasLines
@@ -65,21 +66,47 @@ namespace PCPDFengineCore.Composition.PageElements
         {
             Unit thicknessModifier = Thickness.Value != 0 ? Thickness / 2 : new Unit(0, Thickness.Type);
 
-            //Left
-            Line line3 = AddLine(InitialX + thicknessModifier, InitialY, new Unit(0, width.Type), Height);
-            line3.BorderColor = new Colour(Color.Green);
-
-            //Right
-            Line line4 = AddLine(InitialX + Width - thicknessModifier, InitialY, new Unit(0, width.Type), Height);
-            line4.BorderColor = new Colour(Color.Yellow);
-
             // Top
-            Line line1 = AddLine(InitialX, InitialY + thicknessModifier, Width, new Unit(0, height.Type));
+            Line line1 = AddLine(InitialX, InitialY, Width, new Unit(0, height.Type));
             line1.BorderColor = new Colour(Color.Blue);
+            line1.Name = "TOP";
 
             //Bottom
-            Line line2 = AddLine(InitialX, InitialY + Height - thicknessModifier, Width, new Unit(0, height.Type));
+            Line line2 = AddLine(InitialX, InitialY + Height, Width, new Unit(0, height.Type));
             line2.BorderColor = new Colour(Color.Red);
+            line2.Name = "BOTTOM";
+
+            //Left
+            Line line3 = AddLine(InitialX, InitialY, new Unit(0, width.Type), Height);
+            line3.BorderColor = new Colour(Color.Green);
+            line3.Name = "LEFT";
+
+            //Right
+            Line line4 = AddLine(InitialX + Width, InitialY, new Unit(0, width.Type), Height);
+            line4.BorderColor = new Colour(Color.Yellow);
+            line4.Name = "RIGHT";
+
+            // Set Position to lower right corner.
+            CurrentY = InitialY + Height;
+            CurrentX = InitialX + Width;
+        }
+
+        public void InitialiseEquilateralTriangle()
+        {
+            Unit thicknessModifier = Thickness.Value != 0 ? Thickness / 2 : new Unit(0, Thickness.Type);
+
+            // Base
+            Line line1 = AddLine(InitialX, InitialY, Width, new Unit(0, height.Type));
+            line1.BorderColor = new Colour(Color.Red);
+
+            //Left
+            Line line2 = AddLine(InitialX, InitialY, Width / 2, Height);
+            line2.BorderColor = new Colour(Color.Green);
+
+            //Right
+            Line line3 = AddLine(InitialX + Width, InitialY, -(Width / 2), Height);
+            line3.BorderColor = new Colour(Color.Yellow);
+
 
             // Set Position to lower right corner.
             CurrentY = InitialY + Height;
