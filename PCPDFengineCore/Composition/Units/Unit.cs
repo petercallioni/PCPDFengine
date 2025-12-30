@@ -113,6 +113,12 @@ namespace PCPDFengineCore.Composition.Units
         public static Unit operator -(Unit a, Unit b)
         {
             UnitTypes returnType = a.Type;
+            UnitTypes returnType2 = b.Type;
+
+            if (returnType != returnType2)
+            {
+                throw new ArgumentException($"Cannot subtract {returnType} and {returnType2} directly. Use ValueAs(UnitTypes) on one of them.");
+            }
 
             return new Unit(a.ValueAs(returnType) + -b.ValueAs(returnType), returnType);
         }
@@ -120,6 +126,12 @@ namespace PCPDFengineCore.Composition.Units
         public static Unit operator *(Unit a, Unit b)
         {
             UnitTypes returnType = a.Type;
+            UnitTypes returnType2 = b.Type;
+
+            if (returnType != returnType2)
+            {
+                throw new ArgumentException($"Cannot times {returnType} and {returnType2} directly. Use ValueAs(UnitTypes) on one of them.");
+            }
 
             return new Unit(a.ValueAs(returnType) * b.ValueAs(returnType), returnType);
         }
@@ -132,6 +144,12 @@ namespace PCPDFengineCore.Composition.Units
             }
 
             UnitTypes returnType = a.Type;
+            UnitTypes returnType2 = b.Type;
+
+            if (returnType != returnType2)
+            {
+                throw new ArgumentException($"Cannot divide {returnType} and {returnType2} directly. Use ValueAs(UnitTypes) on one of them.");
+            }
 
             return new Unit(a.ValueAs(returnType) / b.ValueAs(returnType), returnType);
         }
@@ -141,6 +159,32 @@ namespace PCPDFengineCore.Composition.Units
             UnitTypes returnType = a.Type;
 
             return new Unit(a.ValueAs(returnType) * b, returnType);
+        }
+
+        public static bool operator >(Unit a, Unit b)
+        {
+            UnitTypes returnType = a.Type;
+            UnitTypes returnType2 = b.Type;
+
+            if (returnType != returnType2)
+            {
+                throw new ArgumentException($"Cannot compare > {returnType} and {returnType2} directly. Use ValueAs(UnitTypes) on one of them.");
+            }
+
+            return a.ValueAs(returnType) > b.ValueAs(returnType);
+        }
+
+        public static bool operator <(Unit a, Unit b)
+        {
+            UnitTypes returnType = a.Type;
+            UnitTypes returnType2 = b.Type;
+
+            if (returnType != returnType2)
+            {
+                throw new ArgumentException($"Cannot compare < {returnType} and {returnType2} directly. Use ValueAs(UnitTypes) on one of them.");
+            }
+
+            return a.ValueAs(returnType) < b.ValueAs(returnType);
         }
 
         public static Unit operator /(Unit a, double b)

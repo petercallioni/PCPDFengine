@@ -123,21 +123,37 @@ namespace PCPDFengineCore.Composition
                 double offsetX = Math.Sin(angle - Math.PI) * (line.Thickness.ValueAs(dx.Type) / 2);
                 double offsetY = Math.Cos(angle) * (line.Thickness.ValueAs(dy.Type) / 2);
 
-                if (line.InitialX.ValueIndefinite() < centreX.ValueIndefinite())
+                //if (line.InitialX.ValueIndefinite() < centreX.ValueIndefinite())
+                //{
+                //    offsetX = -offsetX;
+                //}
+
+                //if (line.InitialY.ValueIndefinite() > centreY.ValueIndefinite())
+                //{
+                //    offsetY = -offsetY;
+                //}
+
+                double signedArea = (line.EndX().Value - line.CurrentX.Value) * (centreY.Value - line.CurrentY.Value) - (centreX.Value - line.CurrentX.Value) * (line.EndY().Value - line.CurrentY.Value);
+                if (signedArea < 0)
                 {
                     offsetX = -offsetX;
-                }
-
-                if (line.InitialY.ValueIndefinite() > centreY.ValueIndefinite())
-                {
                     offsetY = -offsetY;
                 }
 
                 Line polygonLine = new Line(line);
-                polygonLine.InitialX.AddUnit(new Unit(offsetX, dx.Type));
-                polygonLine.InitialY.AddUnit(new Unit(offsetY, dy.Type));
-                //polygonLine.Width.AddUnit(new Unit(offsetX, dx.Type));
-                //polygonLine.Height.AddUnit(new Unit(offsetY, dy.Type));
+                polygonLine.InitialX.AddUnit(new Unit(offsetX, dx.Type)); // New Start X
+                polygonLine.InitialY.AddUnit(new Unit(offsetY, dy.Type)); // New Start Y
+
+                double cos = Math.Cos(angle);
+                double sin = Math.Sin(angle);
+
+                double degrees = angle * (180 / Math.PI);
+
+                // Offset for line endings
+                //polygonLine.InitialX.AddUnit(new Unit(line.Thickness.Value * cos, dx.Type));
+                //polygonLine.InitialY.AddUnit(new Unit(line.Thickness.Value * sin, dy.Type));
+                //polygonLine.Width.AddUnit(new Unit(-line.Thickness.Value * 2 * cos, dx.Type));
+                //polygonLine.Height.AddUnit(new Unit(-line.Thickness.Value * 2 * sin, dy.Type));
 
                 polygonLines.Add(polygonLine);
             }

@@ -98,19 +98,32 @@ namespace PCPDFengineCore.Composition.PageElements
             // Base
             Line line1 = AddLine(InitialX, InitialY, Width, new Unit(0, height.Type));
             line1.BorderColor = new Colour(Color.Red);
+            line1.Name = "FLAT";
 
             //Left
             Line line2 = AddLine(InitialX, InitialY, Width / 2, Height);
             line2.BorderColor = new Colour(Color.Green);
+            line2.Name = "LEFT";
 
             //Right
             Line line3 = AddLine(InitialX + Width, InitialY, -(Width / 2), Height);
             line3.BorderColor = new Colour(Color.Yellow);
-
+            line3.Name = "RIGHT";
 
             // Set Position to lower right corner.
             CurrentY = InitialY + Height;
             CurrentX = InitialX + Width;
+        }
+
+        public double SignedArea(Polygon polygon)
+        {
+            double area = 0;
+            for (int i = 0; i < polygon.Lines.Count; i++)
+            {
+                Line line = polygon.Lines[i];
+                area += (line.EndX().Value - line.CurrentX.Value) * (line.EndY().Value + line.CurrentY.Value);
+            }
+            return area / 2;
         }
     }
 }
